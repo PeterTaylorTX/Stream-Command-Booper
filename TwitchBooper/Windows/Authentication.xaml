@@ -1,0 +1,25 @@
+﻿<Window x:Class="TwitchBooper.Windows.Authentication"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:strings="clr-namespace:TwitchBooper.Resources.Localisation"
+        xmlns:local="clr-namespace:TwitchBooper.Windows" ResizeMode="NoResize"
+        mc:Ignorable="d"
+        Title="Authentication" Height="230" Width="300" Background="{StaticResource appBackground}">
+    <StackPanel Orientation="Vertical" HorizontalAlignment="Left" Margin="20">
+        <StackPanel Orientation="Horizontal">
+            <Label      Content="{x:Static strings:UI.Username}" VerticalAlignment="Bottom" Margin="0,0,10,0"/>
+            <TextBox    Text="{Binding Path=Client.Config.channelName, Mode=TwoWay}" Width="300"/>
+        </StackPanel>
+        <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
+            <Label      Content="{x:Static strings:UI.OAuthToken}" VerticalAlignment="Bottom" Margin="0,0,10,0"/>
+            <Button     Content="{x:Static strings:UI.NewOAuthToken}" Click="btnGetNewOAuthToken_Clicked"  Width="80"/>
+        </StackPanel>
+        <StackPanel Orientation="Vertical" HorizontalAlignment="Left" Margin="0,10,0,0">
+            <Button     Content="{x:Static strings:UI.ShowOAuthToken}" Click="btnShowOAuthToken_Clicked" Visibility="{Binding ShowOAuthEntryButton}" Width="170"/>
+            <TextBox    Text="{Binding Path=Client.Config.OAuthToken, Mode=TwoWay}" Visibility="{Binding ShowOAuthEntry}" Width="400" />
+        </StackPanel>
+        <Button         Content="{x:Static strings:UI.Save}" Click="btnSave_Clicked" Margin="0,10,0,0"/>
+    </StackPanel>
+</Window>
