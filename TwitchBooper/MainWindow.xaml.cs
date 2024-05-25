@@ -7,7 +7,7 @@ using TwitchLib.Api.Helix.Models.Moderation.BanUser;
 using TwitchLib.Client.Events;
 using TwitchLib.Client.Extensions;
 
-namespace TwitchBooper
+namespace StreamCommandBooper
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
@@ -45,7 +45,7 @@ namespace TwitchBooper
             InitializeComponent();
 
             Client.Config = Twitch.Config.Load();
-            if (string.IsNullOrWhiteSpace(Client.Config.clientID)) { Client.Config.clientID = "fxtbj3u7pr0az3v488dltjbn6b7ium"; } //Set Default Client ID
+            if (string.IsNullOrWhiteSpace(Client.Config.clientID)) { Client.Config.clientID = "0x51241kq9zvluxfa3mgzi43v2b3l0"; } //Set Default Client ID
             this.CurrentChannel = Client.Config.channelName;
             this.ConnectToTwitch();
             this.DataContext = this;

@@ -2,7 +2,7 @@
 using System.Data;
 using System.Windows;
 
-namespace TwitchBooper
+namespace StreamCommandBooper
 {
     /// <summary>
     /// Interaction logic for App.xaml

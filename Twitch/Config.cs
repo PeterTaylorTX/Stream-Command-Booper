@@ -16,7 +16,7 @@ namespace Twitch
         /// <summary>
         /// The config file location
         /// </summary>
-        private static string appDataRoot { get; set; } = $"{Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)}\\Twitch Booper";
+        private static string appDataRoot { get; set; } = $"{Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)}\\Stream Command Booper";
         /// <summary>
         /// The config file location
         /// </summary>

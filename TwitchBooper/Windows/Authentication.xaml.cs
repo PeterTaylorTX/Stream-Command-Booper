@@ -13,7 +13,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 
-namespace TwitchBooper.Windows
+namespace StreamCommandBooper.Windows
 {
     /// <summary>
     /// Interaction logic for Authentication.xaml

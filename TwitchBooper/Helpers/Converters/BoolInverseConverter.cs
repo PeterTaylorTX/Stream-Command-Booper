@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Data;
 
-namespace TwitchBooper.Helpers.Converters
+namespace StreamCommandBooper.Helpers.Converters
 {
     [ValueConversion(typeof(bool), typeof(bool))]
     public class BoolInverseConverter : IValueConverter

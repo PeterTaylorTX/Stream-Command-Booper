@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace TwitchBooper.Resources.Localisation {
+namespace StreamCommandBooper.Resources.Localisation {
     using System;
     
     
@@ -39,7 +39,7 @@ namespace TwitchBooper.Resources.Localisation {
         public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("TwitchBooper.Resources.Localisation.UI", typeof(UI).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("StreamCommandBooper.Resources.Localisation.UI", typeof(UI).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
