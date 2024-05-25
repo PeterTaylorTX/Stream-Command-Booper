@@ -103,8 +103,10 @@ namespace StreamCommandBooper
             var Channel = await Client.pubSub.api.Helix.Users.GetUsersAsync(null, new List<string> { this.CurrentChannel }, Client.Config.OAuthToken);
             var ModID = await Client.pubSub.api.Helix.Users.GetUsersAsync(null, new List<string> { Client.Config.channelName }, Client.Config.OAuthToken);
 
+            string commandLines = this.CommandLines;
+
             Client.TwitchClient.SendMessage(this.CurrentChannel, $"Started: {DateTime.Now.ToString("HH:mm:ss")}");
-            foreach (string line in this.CommandLines.Split(Environment.NewLine))
+            foreach (string line in commandLines.Split(Environment.NewLine))
             {
                 await Task.Delay(this.Delay);
                 if (line.StartsWith("/ban "))
@@ -122,15 +124,19 @@ namespace StreamCommandBooper
                     try
                     {
                         await Client.pubSub.api.Helix.Moderation.BanUserAsync(Channel.Users[0].Id, ModID.Users[0].Id, request, Client.Config.OAuthToken);
-                    } catch { }
+                    }
+                    catch { }
 
+                    this.CommandLines = this.CommandLines.Replace($"{line}\r\n", string.Empty);
                     continue;
                 }
 
                 Client.TwitchClient.SendMessage(this.CurrentChannel, line);
+                this.CommandLines = this.CommandLines.Replace($"{line}\r\n", string.Empty);
             }
 
             Client.TwitchClient.SendMessage(this.CurrentChannel, $"Completed: {DateTime.Now.ToString("HH:mm:ss")}");
+            this.CommandLines = string.Empty;
         }
 
         private void btnLogIn_Clicked(object sender, RoutedEventArgs e)
