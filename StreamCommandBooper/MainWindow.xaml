@@ -7,56 +7,63 @@
         xmlns:strings="clr-namespace:StreamCommandBooper.Resources.Localisation"
         xmlns:local="clr-namespace:StreamCommandBooper"
         mc:Ignorable="d"
-        Title="{x:Static strings:UI.AppName}" Height="450" Width="800" Background="{StaticResource appBackground}">
+        Title="{x:Static strings:UI.AppName}" Height="420" Width="530" MinHeight="420" MinWidth="530" Background="{StaticResource appBackground}">
     <Window.Resources>
         <Converters:BoolInverseConverter x:Key="BoolInverseConverter"/>
     </Window.Resources>
-    
-    <StackPanel Orientation="Horizontal">
-        <StackPanel Orientation="Vertical">
-            <Border Style="{StaticResource Group}">
-                <StackPanel Orientation="Vertical">
-                    <Label Content="{x:Static strings:UI.Logged_In_As}"/>
-                    <Label Content="{Binding Client.TwitchClient.TwitchUsername}"/>
-                    <Button Content="{x:Static strings:UI.Log_In}" IsEnabled="{Binding isProcessing, Converter={StaticResource BoolInverseConverter}}" Click="btnLogIn_Clicked"/>
-                </StackPanel>
-            </Border>
-            <Border Style="{StaticResource Group}">
-                <StackPanel Orientation="Vertical">
-                    <Label Content="{x:Static strings:UI.Configuration}"/>
-                    <StackPanel Orientation="Horizontal">
-                        <Label Content="{x:Static strings:UI.Channel}" Width="70"/>
-                        <TextBox Width="100" Text="{Binding Path=CurrentChannel, Mode=TwoWay}" />
+
+    <Grid>
+        <StackPanel Orientation="Horizontal" VerticalAlignment="Top">
+            <StackPanel Orientation="Vertical">
+                <Border Style="{StaticResource Group}">
+                    <StackPanel Orientation="Vertical">
+                        <Label Content="{x:Static strings:UI.Logged_In_As}"/>
+                        <Label Content="{Binding Client.TwitchClient.TwitchUsername}"/>
+                        <Button Content="{x:Static strings:UI.Log_In}" IsEnabled="{Binding isProcessing, Converter={StaticResource BoolInverseConverter}}" Click="btnLogIn_Clicked"/>
                     </StackPanel>
-                    <StackPanel Orientation="Horizontal">
-                        <Label Content="{x:Static strings:UI.Delay_ms}" Width="70"/>
-                        <TextBox Width="100" Text="{Binding Delay}"/>
+                </Border>
+                <Border Style="{StaticResource Group}">
+                    <StackPanel Orientation="Vertical">
+                        <Label Content="{x:Static strings:UI.Configuration}"/>
+                        <StackPanel Orientation="Horizontal">
+                            <Label Content="{x:Static strings:UI.Channel}" Width="70"/>
+                            <TextBox Width="100" Text="{Binding Path=CurrentChannel, Mode=TwoWay}" />
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <Label Content="{x:Static strings:UI.Delay_ms}" Width="70"/>
+                            <TextBox Width="100" Text="{Binding Delay}"/>
+                        </StackPanel>
+                        <Label Content="{x:Static strings:UI.Delay_Recommended}" />
                     </StackPanel>
-                    <Label Content="{x:Static strings:UI.Delay_Recommended}" />
-                </StackPanel>
-            </Border>
-            <Border Style="{StaticResource Group}">
-                <StackPanel Orientation="Vertical">
-                    <Label Content="{x:Static strings:UI.Statistics}"/>
-                    <StackPanel Orientation="Horizontal">
-                        <Label Content="{x:Static strings:UI.Processed}" Width="70"/>
-                        <Label Content="{Binding Stat_Processed}" Width="70"/>
+                </Border>
+                <Border Style="{StaticResource Group}">
+                    <StackPanel Orientation="Vertical">
+                        <Label Content="{x:Static strings:UI.Statistics}"/>
+                        <StackPanel Orientation="Horizontal">
+                            <Label Content="{x:Static strings:UI.Processed}" Width="70"/>
+                            <Label Content="{Binding Stat_Processed}" Width="70"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <Label Content="{x:Static strings:UI.Remaining}" Width="70"/>
+                            <Label Content="{Binding Stat_Remaining}" Width="70"/>
+                        </StackPanel>
                     </StackPanel>
-                    <StackPanel Orientation="Horizontal">
-                        <Label Content="{x:Static strings:UI.Remaining}" Width="70"/>
-                        <Label Content="{Binding Stat_Remaining}" Width="70"/>
+                </Border>
+            </StackPanel>
+            <StackPanel Orientation="Vertical">
+                <Border Style="{StaticResource Group}">
+                    <StackPanel Orientation="Vertical">
+                        <Label Content="{x:Static strings:UI.Commands_Title}"/>
+                        <TextBox MinWidth="300" Height="300" TextWrapping="NoWrap" AcceptsReturn="True" VerticalScrollBarVisibility="Visible" VerticalContentAlignment="Top" Text="{Binding CommandLines, Mode=TwoWay}"/>
+                        <Button Content="{x:Static strings:UI.Start}" IsEnabled="{Binding isProcessing, Converter={StaticResource BoolInverseConverter}}" Click="btnProcessCommands_Clicked" />
                     </StackPanel>
-                </StackPanel>
-            </Border>
+                </Border>
+            </StackPanel>
         </StackPanel>
-        <StackPanel Orientation="Vertical">
-            <Border Style="{StaticResource Group}">
-                <StackPanel Orientation="Vertical">
-                    <Label Content="{x:Static strings:UI.Commands_Title}"/>
-                    <TextBox MinWidth="300" Height="300" TextWrapping="NoWrap" AcceptsReturn="True" VerticalScrollBarVisibility="Visible" VerticalContentAlignment="Top" Text="{Binding CommandLines, Mode=TwoWay}"/>
-                    <Button Content="{x:Static strings:UI.Start}" IsEnabled="{Binding isProcessing, Converter={StaticResource BoolInverseConverter}}" Click="btnProcessCommands_Clicked" />
-                </StackPanel>
-            </Border>
+
+        <StackPanel Orientation="Horizontal" VerticalAlignment="Bottom" HorizontalAlignment="Left">
+            <Label Content="{x:Static strings:UI.Version}"/>
+            <Label Content="v0.3"/>
         </StackPanel>
-    </StackPanel>
+    </Grid>
 </Window>

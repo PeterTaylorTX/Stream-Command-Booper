@@ -207,4 +207,7 @@
   <data name="Username" xml:space="preserve">
     <value>Username</value>
   </data>
+  <data name="Version" xml:space="preserve">
+    <value>Version:</value>
+  </data>
 </root>
