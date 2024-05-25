@@ -121,13 +121,28 @@
     <value>Active</value>
   </data>
   <data name="AppName" xml:space="preserve">
-    <value>Interactive Chat Bot</value>
+    <value>Stream Command Booper</value>
+  </data>
+  <data name="Authentication" xml:space="preserve">
+    <value>Authentication</value>
+  </data>
+  <data name="Channel" xml:space="preserve">
+    <value>Channel</value>
   </data>
   <data name="ChannelName" xml:space="preserve">
     <value>Channel Name</value>
   </data>
   <data name="ChatCommand" xml:space="preserve">
     <value>Chat Command</value>
+  </data>
+  <data name="Commands_Title" xml:space="preserve">
+    <value>Commands to process</value>
+  </data>
+  <data name="Delay_ms" xml:space="preserve">
+    <value>Delay (ms)</value>
+  </data>
+  <data name="Delay_Recommended" xml:space="preserve">
+    <value>1000ms delay recommended</value>
   </data>
   <data name="Details" xml:space="preserve">
     <value>Details</value>
@@ -137,6 +152,12 @@
   </data>
   <data name="Inactive" xml:space="preserve">
     <value>Inactive</value>
+  </data>
+  <data name="Logged_In_As" xml:space="preserve">
+    <value>Logged In as</value>
+  </data>
+  <data name="Log_In" xml:space="preserve">
+    <value>Log In</value>
   </data>
   <data name="Name" xml:space="preserve">
     <value>Name</value>
@@ -155,6 +176,9 @@
   </data>
   <data name="ShowOAuthToken" xml:space="preserve">
     <value>Show OAuth Token</value>
+  </data>
+  <data name="Start" xml:space="preserve">
+    <value>Start</value>
   </data>
   <data name="Status" xml:space="preserve">
     <value>Status</value>

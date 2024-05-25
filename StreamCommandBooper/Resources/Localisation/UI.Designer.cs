@@ -70,11 +70,29 @@ namespace StreamCommandBooper.Resources.Localisation {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Interactive Chat Bot.
+        ///   Looks up a localized string similar to Stream Command Booper.
         /// </summary>
         public static string AppName {
             get {
                 return ResourceManager.GetString("AppName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Authentication.
+        /// </summary>
+        public static string Authentication {
+            get {
+                return ResourceManager.GetString("Authentication", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Channel.
+        /// </summary>
+        public static string Channel {
+            get {
+                return ResourceManager.GetString("Channel", resourceCulture);
             }
         }
         
@@ -93,6 +111,33 @@ namespace StreamCommandBooper.Resources.Localisation {
         public static string ChatCommand {
             get {
                 return ResourceManager.GetString("ChatCommand", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Commands to process.
+        /// </summary>
+        public static string Commands_Title {
+            get {
+                return ResourceManager.GetString("Commands_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Delay (ms).
+        /// </summary>
+        public static string Delay_ms {
+            get {
+                return ResourceManager.GetString("Delay_ms", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 1000ms delay recommended.
+        /// </summary>
+        public static string Delay_Recommended {
+            get {
+                return ResourceManager.GetString("Delay_Recommended", resourceCulture);
             }
         }
         
@@ -120,6 +165,24 @@ namespace StreamCommandBooper.Resources.Localisation {
         public static string Inactive {
             get {
                 return ResourceManager.GetString("Inactive", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Log In.
+        /// </summary>
+        public static string Log_In {
+            get {
+                return ResourceManager.GetString("Log_In", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Logged In as.
+        /// </summary>
+        public static string Logged_In_As {
+            get {
+                return ResourceManager.GetString("Logged_In_As", resourceCulture);
             }
         }
         
@@ -174,6 +237,15 @@ namespace StreamCommandBooper.Resources.Localisation {
         public static string ShowOAuthToken {
             get {
                 return ResourceManager.GetString("ShowOAuthToken", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Start.
+        /// </summary>
+        public static string Start {
+            get {
+                return ResourceManager.GetString("Start", resourceCulture);
             }
         }
         

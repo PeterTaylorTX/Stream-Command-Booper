@@ -6,7 +6,7 @@
         xmlns:strings="clr-namespace:StreamCommandBooper.Resources.Localisation"
         xmlns:local="clr-namespace:StreamCommandBooper.Windows" ResizeMode="NoResize"
         mc:Ignorable="d"
-        Title="Authentication" Height="230" Width="300" Background="{StaticResource appBackground}">
+        Title="{x:Static strings:UI.Authentication}" Height="230" Width="300" Background="{StaticResource appBackground}">
     <StackPanel Orientation="Vertical" HorizontalAlignment="Left" Margin="20">
         <StackPanel Orientation="Horizontal">
             <Label      Content="{x:Static strings:UI.Username}" VerticalAlignment="Bottom" Margin="0,0,10,0"/>
