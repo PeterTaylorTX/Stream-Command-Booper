@@ -38,7 +38,11 @@ namespace StreamCommandBooper
         public bool isProcessing { get { return _isProcessing; } set { _isProcessing = value; OnPropertyChanged(nameof(isProcessing)); } }
         bool _isProcessing = false;
         public Int32 Delay { get { return _Delay; } set { _Delay = value; OnPropertyChanged(nameof(Delay)); } }
-        Int32 _Delay = 1000;
+        Int32 _Delay = 2000;
+        public Int32 Stat_Processed { get { return _Stat_Processed; } set { _Stat_Processed = value; OnPropertyChanged(nameof(Stat_Processed)); } }
+        Int32 _Stat_Processed = 0;
+        public Int32 Stat_Remaining { get { return _Stat_Remaining; } set { _Stat_Remaining = value; OnPropertyChanged(nameof(Stat_Remaining)); } }
+        Int32 _Stat_Remaining = 0;
 
         public MainWindow()
         {
@@ -103,12 +107,17 @@ namespace StreamCommandBooper
             var Channel = await Client.pubSub.api.Helix.Users.GetUsersAsync(null, new List<string> { this.CurrentChannel }, Client.Config.OAuthToken);
             var ModID = await Client.pubSub.api.Helix.Users.GetUsersAsync(null, new List<string> { Client.Config.channelName }, Client.Config.OAuthToken);
 
-            string commandLines = this.CommandLines;
+            string[] commandLines = this.CommandLines.Split(Environment.NewLine);
+            this.Stat_Remaining = commandLines.Length;
+            this.Stat_Processed = 0;
 
             Client.TwitchClient.SendMessage(this.CurrentChannel, $"Started: {DateTime.Now.ToString("HH:mm:ss")}");
-            foreach (string line in commandLines.Split(Environment.NewLine))
+            foreach (string line in commandLines)
             {
                 await Task.Delay(this.Delay);
+                this.Stat_Remaining -= 1;
+                this.Stat_Processed += 1;
+
                 if (line.StartsWith("/ban "))
                 {
                     string[] command = line.Split(" ");

@@ -23,7 +23,7 @@
             </Border>
             <Border Style="{StaticResource Group}">
                 <StackPanel Orientation="Vertical">
-                    <Label Content="Configuration"/>
+                    <Label Content="{x:Static strings:UI.Configuration}"/>
                     <StackPanel Orientation="Horizontal">
                         <Label Content="{x:Static strings:UI.Channel}" Width="70"/>
                         <TextBox Width="100" Text="{Binding Path=CurrentChannel, Mode=TwoWay}" />
@@ -33,7 +33,19 @@
                         <TextBox Width="100" Text="{Binding Delay}"/>
                     </StackPanel>
                     <Label Content="{x:Static strings:UI.Delay_Recommended}" />
-
+                </StackPanel>
+            </Border>
+            <Border Style="{StaticResource Group}">
+                <StackPanel Orientation="Vertical">
+                    <Label Content="{x:Static strings:UI.Statistics}"/>
+                    <StackPanel Orientation="Horizontal">
+                        <Label Content="{x:Static strings:UI.Processed}" Width="70"/>
+                        <Label Content="{Binding Stat_Processed}" Width="70"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <Label Content="{x:Static strings:UI.Remaining}" Width="70"/>
+                        <Label Content="{Binding Stat_Remaining}" Width="70"/>
+                    </StackPanel>
                 </StackPanel>
             </Border>
         </StackPanel>
