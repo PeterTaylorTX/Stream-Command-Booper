@@ -127,24 +127,15 @@ namespace StreamCommandBooper
 
                 if (line.StartsWith("/ban "))
                 {
-                    string[] command = line.Split(" ");
-                    string viewer = string.Empty;
-                    string reason = string.Empty;
-                    if (command.Length >= 2) { viewer = command[1]; } else { continue; }
-                    if (command.Length >= 3) { reason = line.Replace($"/ban {viewer} ", string.Empty); }
-                    var UserIDs = await Twitch.APIs.Users.GetUsersAsync(null, new List<string> { viewer });
-                    if (UserIDs == null || UserIDs.Data == null || UserIDs.Data.Count() == 0) { continue; }
-                    viewer = UserIDs.Data[0].ID;
-
-                    try
-                    {
-                        await Twitch.APIs.Users.BanUserAsync(Channel.Data[0].ID, UserIDs.Data[0].ID, reason);
-                    }
-                    catch { }
-
-                    this.CommandLines = this.CommandLines.Replace($"{line}\r\n", string.Empty);
+                    await this.BanUser(Channel.Data[0].ID, line);
                     continue;
                 }
+                if (line.StartsWith("/add_blocked_term "))
+                {
+                    await this.AddBlockedTerm(Channel.Data[0].ID, line);
+                    continue;
+                }
+
 
                 await Twitch.APIs.Chat.SendMessageAsync(Channel.Data[0].ID, line);
                 this.CommandLines = this.CommandLines.Replace($"{line}\r\n", string.Empty);
@@ -152,6 +143,49 @@ namespace StreamCommandBooper
 
             await Twitch.APIs.Chat.SendMessageAsync(Channel.Data[0].ID, $"Completed: {DateTime.Now.ToString("HH:mm:ss")}");
             this.CommandLines = string.Empty;
+        }
+
+        private async Task AddBlockedTerm(string ChannelID, string line)
+        {
+            string[] command = line.Split(" ");
+            string viewer = string.Empty;
+            string blocked_term = string.Empty;
+            blocked_term = line.Replace($"/add_blocked_term ", string.Empty);
+            if (string.IsNullOrWhiteSpace(blocked_term)) { return; }
+
+            try
+            {
+                await Twitch.APIs.Blocked_Terms.BlockTermAsync(ChannelID, blocked_term);
+            }
+            catch { }
+
+            this.CommandLines = this.CommandLines.Replace($"{line}\r\n", string.Empty);
+        }
+
+        /// <summary>
+        /// Ban the user
+        /// </summary>
+        /// <param name="ChannelID"></param>
+        /// <param name="line"></param>
+        /// <returns></returns>
+        private async Task BanUser( string ChannelID, string line)
+        {
+            string[] command = line.Split(" ");
+            string viewer = string.Empty;
+            string reason = string.Empty;
+            if (command.Length >= 2) { viewer = command[1]; } else { return; }
+            if (command.Length >= 3) { reason = line.Replace($"/ban {viewer} ", string.Empty); }
+            var UserIDs = await Twitch.APIs.Users.GetUsersAsync(null, new List<string> { viewer });
+            if (UserIDs == null || UserIDs.Data == null || UserIDs.Data.Count() == 0) { return; }
+            viewer = UserIDs.Data[0].ID;
+
+            try
+            {
+                await Twitch.APIs.Users.BanUserAsync(ChannelID, UserIDs.Data[0].ID, reason);
+            }
+            catch { }
+
+            this.CommandLines = this.CommandLines.Replace($"{line}\r\n", string.Empty);
         }
 
         private void btnLogIn_Clicked(object sender, RoutedEventArgs e)

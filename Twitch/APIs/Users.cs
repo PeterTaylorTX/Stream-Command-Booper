@@ -41,7 +41,8 @@ namespace Twitch.APIs
             string? result = (string?)await Twitch.Helpers.httpRequests.Get(URL, authHeaders);
             if (result == null) { return new(); }
 
-            Models.Users.Channels users = Newtonsoft.Json.JsonConvert.DeserializeObject<Models.Users.Channels>(result);
+            Models.Users.Channels? users = Newtonsoft.Json.JsonConvert.DeserializeObject<Models.Users.Channels>(result);
+            if (users == null) { return new(); }
             return users;
         }
 
@@ -72,6 +73,7 @@ namespace Twitch.APIs
 
         /// <summary>
         /// Ban a viewer
+        /// Requires scope: moderator:manage:banned_users
         /// </summary>
         /// <param name="ChannelID">The channel ID to ban the user in</param>
         /// <param name="UserID">The User ID to ban</param>
@@ -83,18 +85,26 @@ namespace Twitch.APIs
             authHeaders.Add("Authorization", $"Bearer {Twitch.Config.OAuthToken}");
             authHeaders.Add("Client-Id", Twitch.Config.ClientID);
             string URL = $"https://api.twitch.tv/helix/moderation/bans?broadcaster_id={ChannelID}&moderator_id={Config.ChannelID}";
-            string BanRequest = $"{{\"data\": {{\"user_id\":\"{UserID}\",\"reason\":\"{Reason}\"}}}}";
+            var BanRequest = new Models.Users.Ban_User_Request()
+            {
+                data = new()
+                {
+                    user_id = UserID,
+                    reason = Reason
+                }
+            };
 
             string? result = (string?)await Twitch.Helpers.httpRequests.Post(URL, authHeaders, BanRequest);
             if (result == null) { return new(); }
 
             Models.Users.Ban_User_Response? response = Newtonsoft.Json.JsonConvert.DeserializeObject<Models.Users.Ban_User_Response>(result);
-            if(response == null) { return new(); }
+            if (response == null) { return new(); }
             return response;
         }
 
         /// <summary>
         /// Timeout a viewer
+        /// Requires scope: moderator:manage:banned_users
         /// </summary>
         /// <param name="ChannelID">The channel ID to timeout the user in</param>
         /// <param name="UserID">The User ID to timeout</param>

@@ -153,6 +153,15 @@
   <data name="Example" xml:space="preserve">
     <value>Example</value>
   </data>
+  <data name="Examples" xml:space="preserve">
+    <value>Examples</value>
+  </data>
+  <data name="example_BanUser" xml:space="preserve">
+    <value>/ban {username} {reason}</value>
+  </data>
+  <data name="example_BlockedTerm" xml:space="preserve">
+    <value>/add_blocked_term {term}</value>
+  </data>
   <data name="Inactive" xml:space="preserve">
     <value>Inactive</value>
   </data>

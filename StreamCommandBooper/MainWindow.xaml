@@ -7,7 +7,7 @@
         xmlns:strings="clr-namespace:StreamCommandBooper.Resources.Localisation"
         xmlns:local="clr-namespace:StreamCommandBooper"
         mc:Ignorable="d" Loaded="Window_Loaded"
-        Title="{x:Static strings:UI.AppName}" Height="420" Width="780" MinHeight="420" MinWidth="780" Background="{StaticResource appBackground}">
+        Title="{x:Static strings:UI.AppName}" Height="470" Width="780" MinHeight="470" MinWidth="780" Background="{StaticResource appBackground}">
     <Window.Resources>
         <Converters:BoolInverseConverter x:Key="BoolInverseConverter"/>
     </Window.Resources>
@@ -49,6 +49,13 @@
                         </StackPanel>
                     </StackPanel>
                 </Border>
+                <Border Style="{StaticResource Group}">
+                    <StackPanel Orientation="Vertical" HorizontalAlignment="Left">
+                        <Label Content="{x:Static strings:UI.Examples}"/>
+                        <Label Content="{x:Static strings:UI.example_BanUser}"/>
+                        <Label Content="{x:Static strings:UI.example_BlockedTerm}"/>
+                    </StackPanel>
+                </Border>
             </StackPanel>
             <StackPanel Orientation="Vertical">
                 <Border Style="{StaticResource Group}">
@@ -61,9 +68,9 @@
             </StackPanel>
         </StackPanel>
 
-        <StackPanel Orientation="Horizontal" VerticalAlignment="Bottom" HorizontalAlignment="Left">
+        <StackPanel Orientation="Horizontal" VerticalAlignment="Bottom" HorizontalAlignment="Right">
             <Label Content="{x:Static strings:UI.Version}"/>
-            <Label Content="v0.5"/>
+            <Label Content="v0.6"/>
         </StackPanel>
     </Grid>
 </Window>

@@ -69,6 +69,28 @@ namespace Twitch.Models
         }
         #endregion
 
+
+        public class Ban_User_Request
+        {
+            /// <summary>
+            /// A list of users to ban
+            /// </summary>
+            public Ban_User_Request_Data data { get; set; } = new();
+            /// <summary>
+            /// The user to ban
+            /// </summary>
+            public class Ban_User_Request_Data
+            {
+                /// <summary>
+                /// The UserID to ban
+                /// </summary>
+                public string user_id { get; set; } = string.Empty;
+                /// <summary>
+                /// The reason for the ban
+                /// </summary>
+                public string reason { get; set; } = string.Empty;
+            }
+        }
         /// <summary>
         /// The ban user response
         /// </summary>
@@ -77,8 +99,8 @@ namespace Twitch.Models
             /// <summary>
             /// A list that contains the user you successfully banned or put in a timeout.
             /// </summary>
-            public List<bans> Data { get; set; } = new();
-            public class bans
+            public List<Bans> Data { get; set; } = new();
+            public class Bans
             {
                 /// <summary>
                 /// The broadcaster whose chat room the user was banned from chatting in.

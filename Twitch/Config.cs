@@ -11,8 +11,6 @@ namespace Twitch
 {
     public class Config
     {
-        public static event PropertyChangedEventHandler? PropertyChanged;
-
         /// <summary>
         /// The config file location
         /// </summary>

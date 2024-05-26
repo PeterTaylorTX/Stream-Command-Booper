@@ -169,6 +169,33 @@ namespace StreamCommandBooper.Resources.Localisation {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to /ban {username} {reason}.
+        /// </summary>
+        public static string example_BanUser {
+            get {
+                return ResourceManager.GetString("example_BanUser", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to /add_blocked_term {term}.
+        /// </summary>
+        public static string example_BlockedTerm {
+            get {
+                return ResourceManager.GetString("example_BlockedTerm", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Examples.
+        /// </summary>
+        public static string Examples {
+            get {
+                return ResourceManager.GetString("Examples", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Inactive.
         /// </summary>
         public static string Inactive {
