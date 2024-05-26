@@ -30,11 +30,11 @@ namespace Twitch
 
         public void Connect()
         {
-            api.Settings.ClientId = twitch.Config.clientID;
-            api.Settings.AccessToken = twitch.Config.OAuthToken;
+            api.Settings.ClientId = Twitch.Config.ClientID;
+            api.Settings.AccessToken = Twitch.Config.OAuthToken;
             pub.Connect();
-            if (String.IsNullOrEmpty(twitch.Config.channelName)) { return; }
-            broadcaster.Add(twitch.Config.channelName);
+            if (String.IsNullOrEmpty(Twitch.Config.ChannelName)) { return; }
+            broadcaster.Add(Twitch.Config.ChannelName);
         }
 
         private void Pub_OnListenResponse(object? sender, TwitchLib.PubSub.Events.OnListenResponseArgs e)
@@ -45,12 +45,12 @@ namespace Twitch
 
         private async void Pub_onPubSubServiceConnected(object? sender, EventArgs e)
         {
-            TwitchLib.Api.Helix.Models.Users.GetUsers.GetUsersResponse user = await api.Helix.Users.GetUsersAsync(null, broadcaster, twitch.Config.OAuthToken);
+            TwitchLib.Api.Helix.Models.Users.GetUsers.GetUsersResponse user = await api.Helix.Users.GetUsersAsync(null, broadcaster, Twitch.Config.OAuthToken);
             channelID = user.Users[0].Id;
             pub.ListenToBitsEventsV2(channelID);
             pub.ListenToChannelPoints(channelID);
 
-            pub.SendTopics(twitch.Config.OAuthToken);
+            pub.SendTopics(Twitch.Config.OAuthToken);
         }
 
 

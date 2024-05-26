@@ -9,9 +9,9 @@ using System.Threading.Tasks;
 
 namespace Twitch
 {
-    public class Config : INotifyPropertyChanged
+    public class Config
     {
-        public event PropertyChangedEventHandler? PropertyChanged;
+        public static event PropertyChangedEventHandler? PropertyChanged;
 
         /// <summary>
         /// The config file location
@@ -26,46 +26,36 @@ namespace Twitch
         /// </summary>
         private static string configFile = $"{appDataFolder}\\TwitchConfig.cfg";
 
-        public string authScopes = "channel:bot+chat:edit+chat:read+moderator:manage:banned_users+moderation:read+moderator:manage:blocked_terms+user:read:moderated_channels+channel:moderate+user:read:moderated_channels";
+        static string authScopes = "channel:bot+chat:edit+chat:read+moderator:manage:banned_users+moderation:read+moderator:manage:blocked_terms+user:read:moderated_channels+channel:moderate+user:read:moderated_channels";
         /// <summary>
         /// The Twitch Client ID
         /// </summary>
-        public string? clientID { get; set; }
+        public static string ClientID { get; set; } = string.Empty;
         /// <summary>
         /// Twitch Channel Name
         /// </summary>
-        public string? channelName
-        {
-            get => _channelName;
-            set { _channelName = value; if (PropertyChanged != null) { PropertyChanged(this, new PropertyChangedEventArgs("ChannelName")); } }
-        }
-        string? _channelName = string.Empty;
+        public static string ChannelName { get; set; } = string.Empty;
         /// <summary>
         /// OAuth Token
         /// </summary>
-        public string? OAuthToken
-        {
-            get => _OAuthToken;
-            set { _OAuthToken = value; if (PropertyChanged != null) { PropertyChanged(this, new PropertyChangedEventArgs("OAuthToken")); } }
-        }
-        string? _OAuthToken;
+        public static string OAuthToken { get; set; } = string.Empty;
 
-        public void GetOAuthToken()
+        public static void GetOAuthToken()
         {
-            this.getToken();
-            this.ListenForAccessToken();
+            getToken();
+            ListenForAccessToken();
         }
 
         /// <summary>
         /// Get the auth token
         /// </summary>
-        void getToken()
+        static void getToken()
         {
             try
             {
                 Process.Start(new ProcessStartInfo
                 {
-                    FileName = $"https://id.twitch.tv/oauth2/authorize?response_type=token&client_id={this.clientID}&scope={authScopes}&redirect_uri={System.Web.HttpUtility.UrlEncode("http://localhost:54856")}",
+                    FileName = $"https://id.twitch.tv/oauth2/authorize?response_type=token&client_id={ClientID}&scope={authScopes}&redirect_uri={System.Web.HttpUtility.UrlEncode("http://localhost:54856")}",
                     UseShellExecute = true
                 });
             }
@@ -76,13 +66,13 @@ namespace Twitch
 
         }
 
-        void ListenForAccessToken()
+        static void ListenForAccessToken()
         {
             Helpers.httpServer.runServer("http://localhost", "54856");
             Console.WriteLine("Please enter the Access Token:");
-            this.OAuthToken = Console.ReadLine();
+            OAuthToken = Console.ReadLine();
 
-            if (this.OAuthToken == null)
+            if (OAuthToken == null)
             {
                 Console.WriteLine("Unable to access auth key.");
                 Console.WriteLine("Reason:");
@@ -96,33 +86,60 @@ namespace Twitch
         /// Load the config from a file
         /// </summary>
         /// <returns></returns>
-        public static Config Load()
+        public static async Task Load()
         {
-            Config? config = null;
-            if (!System.IO.File.Exists(configFile)) { return new Config(); }
-            string configData = System.IO.File.ReadAllText(configFile);
-            config = Newtonsoft.Json.JsonConvert.DeserializeObject<Config>(configData);
-            if (config == null) { return new Config(); }
-            return config;
+            SaveData? config = null;
+            if (!System.IO.File.Exists(configFile)) { return; }
+            string configData = await System.IO.File.ReadAllTextAsync(configFile);
+            config = Newtonsoft.Json.JsonConvert.DeserializeObject<SaveData>(configData);
+            if (!config.HasValue) { return; }
+
+            ClientID = config.Value.clientID;
+            ChannelName = config.Value.channelName;
+            OAuthToken = config.Value.oAuthToken;
         }
 
         /// <summary>
         /// Save the config file
         /// </summary>
-        public async Task SaveAsync()
+        public static async Task SaveAsync()
         {
+            SaveData data = new SaveData() { clientID = ClientID, channelName = ChannelName, oAuthToken = OAuthToken };
+
             if (!System.IO.Directory.Exists(appDataRoot)) { System.IO.Directory.CreateDirectory(appDataRoot); }
             if (!System.IO.Directory.Exists(appDataFolder)) { System.IO.Directory.CreateDirectory(appDataFolder); }
-            await System.IO.File.WriteAllTextAsync(configFile, Newtonsoft.Json.JsonConvert.SerializeObject(this));
+            await System.IO.File.WriteAllTextAsync(configFile, Newtonsoft.Json.JsonConvert.SerializeObject(data));
         }
         /// <summary>
         /// Save the config file
         /// </summary>
-        public void Save()
+        public static void Save()
         {
+            SaveData data = new SaveData() { clientID = ClientID, channelName = ChannelName, oAuthToken = OAuthToken };
+
             if (!System.IO.Directory.Exists(appDataRoot)) { System.IO.Directory.CreateDirectory(appDataRoot); }
             if (!System.IO.Directory.Exists(appDataFolder)) { System.IO.Directory.CreateDirectory(appDataFolder); }
-            System.IO.File.WriteAllText(configFile, Newtonsoft.Json.JsonConvert.SerializeObject(this));
+            System.IO.File.WriteAllText(configFile, Newtonsoft.Json.JsonConvert.SerializeObject(data));
+        }
+
+        /// <summary>
+        /// Used for saving/loading the config
+        /// </summary>
+        protected struct SaveData
+        {
+            /// <summary>
+            /// The Twitch Client ID
+            /// </summary>
+            public string clientID;
+            /// <summary>
+            /// Twitch Channel Name
+            /// </summary>
+            public string channelName;
+            /// <summary>
+            /// OAuth Token
+            /// </summary>
+            public string oAuthToken;
+
         }
     }
 }

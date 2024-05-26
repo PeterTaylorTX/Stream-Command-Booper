@@ -18,15 +18,6 @@ namespace Twitch
         public event PropertyChangedEventHandler? PropertyChanged;
 
         public bool Initialized { get; set; } = false;
-        /// <summary>
-        /// The Twitch Connection Config
-        /// </summary>
-        public Config Config
-        {
-            get => _config;
-            set { _config = value; if (PropertyChanged != null) { PropertyChanged(this, new PropertyChangedEventArgs("config")); } }
-        }
-        protected Config _config;
 
         /// <summary>
         /// Twitch Client
@@ -44,7 +35,6 @@ namespace Twitch
         public PubSub pubSub;
         public Client()
         {
-            _config = new Config();
             if (this.TwitchClient == null) { this.TwitchClient = new TwitchLib.Client.TwitchClient(); }
             this.pubSub = new PubSub(this);
         }
@@ -57,10 +47,10 @@ namespace Twitch
             try
             {
                 if (string.IsNullOrWhiteSpace(Config.OAuthToken)) { return false; }
-                if (string.IsNullOrWhiteSpace(Config.channelName)) { return false; }
+                if (string.IsNullOrWhiteSpace(Config.ChannelName)) { return false; }
 
                 if (TwitchClient.JoinedChannels != null && TwitchClient.JoinedChannels.Count() >= 1) { return true; };
-                TwitchClient.Initialize(new ConnectionCredentials(this.Config.channelName, this.Config.OAuthToken), this.Config.channelName);
+                TwitchClient.Initialize(new ConnectionCredentials(Config.ChannelName, Config.OAuthToken), Config.ChannelName);
 
                 TwitchClient.OnConnectionError += onConnectionError;
                 TwitchClient.OnError += onError;
@@ -95,7 +85,7 @@ namespace Twitch
             {
                 //TwitchClient.SendMessage(this.Config.channelName, $"Chat Interaction Bot Joined");
             }
-            this.Config.Save(); // Save the config file on successful connection
+            Config.Save(); // Save the config file on successful connection
         }
 
         /// <summary>

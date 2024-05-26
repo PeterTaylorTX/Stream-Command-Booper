@@ -51,7 +51,7 @@ namespace StreamCommandBooper.Windows
         private async void btnSave_Clicked(object sender, RoutedEventArgs e)
         {
             MainWindow.Client.Connect(); // Config saves on connection
-            await MainWindow.Client.Config.SaveAsync();
+            await Twitch.Config.SaveAsync();
             if (MainWindow.Client.Initialized) { this.Close(); }
         }
 
@@ -60,7 +60,7 @@ namespace StreamCommandBooper.Windows
         /// </summary>
         private void btnGetNewOAuthToken_Clicked(object sender, RoutedEventArgs e)
         {
-            MainWindow.Client.Config.GetOAuthToken();
+            Twitch.Config.GetOAuthToken();
             this.ShowOAuthEntry = Visibility.Visible;
             this.ShowOAuthEntryButton = Visibility.Collapsed;
         }
