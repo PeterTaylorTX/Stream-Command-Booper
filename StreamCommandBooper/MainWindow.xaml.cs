@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel;
 using System.Windows;
 using Twitch;
+using TwitchLib.Api;
 using TwitchLib.Api.Helix;
 using TwitchLib.Api.Helix.Models.Extensions.ReleasedExtensions;
 using TwitchLib.Api.Helix.Models.Moderation.BanUser;
@@ -68,21 +69,22 @@ namespace StreamCommandBooper
 
         protected async Task GetChannels()
         {
-            var Mod = await Client.pubSub.api.Helix.Users.GetUsersAsync(null, new List<string> { Twitch.Config.ChannelName }, Twitch.Config.OAuthToken);
-            if (Mod.Users.Length > 0)
+            TwitchAPI tAPI = new TwitchAPI();
+            var Mod = await Twitch.APIs.Users.User.GetAsync(null, new List<string> { Twitch.Config.ChannelName });
+            
+            if (Mod.Data.Count > 0)
             {
                 this.Channels.Clear();
 
-                var Channels = await Twitch.APIs.Users.User_Moderation_Channels.GetAsync(Mod.Users[0].Id);
-                if (!Channels.HasValue) { return; }
+                var Channels = await Twitch.APIs.Users.User_Moderation_Channels.GetAsync(Mod.Data[0].ID);
+                if (Channels.Data == null) { return; }
+
+                this.Channels.Add(Twitch.Config.ChannelName);
+                foreach (var user in Channels.Data)
                 {
-                    this.Channels.Add(Twitch.Config.ChannelName);
-                    foreach (var user in Channels.Value.Data)
-                    {
-                        this.Channels.Add(user.Broadcaster_Login);
-                    }
-                    this.CurrentChannel = this.Channels.FirstOrDefault();
+                    this.Channels.Add(user.Broadcaster_Login);
                 }
+                this.CurrentChannel = this.Channels.FirstOrDefault();
             }
 
         }
@@ -135,9 +137,9 @@ namespace StreamCommandBooper
             if (string.IsNullOrWhiteSpace(this.CurrentChannel)) { return; }
             if (string.IsNullOrWhiteSpace(Twitch.Config.ChannelName)) { return; }
 
-            //var channel = Client.TwitchClient.GetJoinedChannel(this.CurrentChannel);
-            var Channel = await Client.pubSub.api.Helix.Users.GetUsersAsync(null, new List<string> { this.CurrentChannel }, Twitch.Config.OAuthToken);
-            var ModID = await Client.pubSub.api.Helix.Users.GetUsersAsync(null, new List<string> { Twitch.Config.ChannelName }, Twitch.Config.OAuthToken);
+            TwitchAPI tAPI = new TwitchAPI();
+            var Channel = await tAPI.Helix.Users.GetUsersAsync(null, new List<string> { this.CurrentChannel }, Twitch.Config.OAuthToken);
+            var ModID = await tAPI.Helix.Users.GetUsersAsync(null, new List<string> { Twitch.Config.ChannelName }, Twitch.Config.OAuthToken);
 
             string[] commandLines = this.CommandLines.Split(Environment.NewLine);
             this.Stat_Remaining = commandLines.Length;
@@ -157,14 +159,14 @@ namespace StreamCommandBooper
                     string reason = string.Empty;
                     if (command.Length >= 2) { viewer = command[1]; } else { continue; }
                     if (command.Length >= 3) { reason = line.Replace($"/ban {viewer} ", string.Empty); }
-                    var UserIDs = await Client.pubSub.api.Helix.Users.GetUsersAsync(null, new List<string> { viewer }, Twitch.Config.OAuthToken);
+                    var UserIDs = await tAPI.Helix.Users.GetUsersAsync(null, new List<string> { viewer }, Twitch.Config.OAuthToken);
                     if (UserIDs != null && UserIDs.Users != null && UserIDs.Users.Count() > 0) { viewer = UserIDs.Users[0].Id; }
 
                     BanUserRequest request = new BanUserRequest { UserId = viewer, Reason = reason };
 
                     try
                     {
-                        await Client.pubSub.api.Helix.Moderation.BanUserAsync(Channel.Users[0].Id, ModID.Users[0].Id, request, Twitch.Config.OAuthToken);
+                        await tAPI.Helix.Moderation.BanUserAsync(Channel.Users[0].Id, ModID.Users[0].Id, request, Twitch.Config.OAuthToken);
                     }
                     catch { }
 

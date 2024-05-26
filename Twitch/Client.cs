@@ -29,14 +29,9 @@ namespace Twitch
         }
         protected TwitchLib.Client.TwitchClient _TwitchClient = new TwitchLib.Client.TwitchClient();
 
-        /// <summary>
-        /// Twitch pubSub, API's for accessing subscriber, Bit, and Channel Point notifications
-        /// </summary>
-        public PubSub pubSub;
         public Client()
         {
             if (this.TwitchClient == null) { this.TwitchClient = new TwitchLib.Client.TwitchClient(); }
-            this.pubSub = new PubSub(this);
         }
 
         /// <summary>
@@ -65,7 +60,6 @@ namespace Twitch
                 //TwitchClient.OnReSubscriber += onReSubscriberReceived;
                 //TwitchClient.OnChatCommandReceived += onChatCommandReceived;
                 TwitchClient.Connect();
-                pubSub.Connect();
                 this.Initialized = TwitchClient.IsConnected;
                 return TwitchClient.IsConnected;
             }
