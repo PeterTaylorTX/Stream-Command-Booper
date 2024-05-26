@@ -160,7 +160,7 @@
     <value>/ban {username} {reason}</value>
   </data>
   <data name="example_BlockedTerm" xml:space="preserve">
-    <value>/add_blocked_term {term}</value>
+    <value>/add__blocked__term {term}</value>
   </data>
   <data name="Inactive" xml:space="preserve">
     <value>Inactive</value>

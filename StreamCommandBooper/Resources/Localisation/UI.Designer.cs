@@ -178,7 +178,7 @@ namespace StreamCommandBooper.Resources.Localisation {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to /add_blocked_term {term}.
+        ///   Looks up a localized string similar to /add__blocked__term {term}.
         /// </summary>
         public static string example_BlockedTerm {
             get {
