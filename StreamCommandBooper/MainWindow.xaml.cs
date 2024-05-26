@@ -43,6 +43,8 @@ namespace StreamCommandBooper
         Int32 _Stat_Processed = 0;
         public Int32 Stat_Remaining { get { return _Stat_Remaining; } set { _Stat_Remaining = value; OnPropertyChanged(nameof(Stat_Remaining)); } }
         Int32 _Stat_Remaining = 0;
+        public List<String> Channels { get { return _Channels; } set { _Channels = value; OnPropertyChanged(nameof(Channels)); } }
+        List<String> _Channels { get; set; } = new();
 
         public MainWindow()
         {
@@ -52,7 +54,41 @@ namespace StreamCommandBooper
             if (string.IsNullOrWhiteSpace(Client.Config.clientID)) { Client.Config.clientID = "0x51241kq9zvluxfa3mgzi43v2b3l0"; } //Set Default Client ID
             this.CurrentChannel = Client.Config.channelName;
             this.ConnectToTwitch();
+        }
+
+        private async void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                await this.GetChannels();
+            }
+            catch { }
             this.DataContext = this;
+        }
+
+
+        protected async Task GetChannels()
+        {
+            var Mod = await Client.pubSub.api.Helix.Users.GetUsersAsync(null, new List<string> { Client.Config.channelName }, Client.Config.OAuthToken);
+            if (Mod.Users.Length > 0)
+            {
+                Dictionary<string, string> authHeaders = new();
+                authHeaders.Add("Authorization", $"Bearer {Client.Config.OAuthToken}");
+                authHeaders.Add("Client-Id", Client.Config.clientID);
+                string? result = (string?)await Twitch.Helpers.httpRequests.Get($"https://api.twitch.tv/helix/moderation/channels?user_id={Mod.Users[0].Id}", authHeaders);
+                if (result != null)
+                {
+                    Twitch.Structs.User_Moderation_Channels.Channels channels = Newtonsoft.Json.JsonConvert.DeserializeObject<Twitch.Structs.User_Moderation_Channels.Channels>(result);
+                    this.Channels.Clear();
+                    this.Channels.Add(Client.Config.channelName);
+                    foreach (var user in channels.Data)
+                    {
+                        this.Channels.Add(user.broadcaster_login);
+                    }
+                    this.CurrentChannel = this.Channels.FirstOrDefault();
+                }
+            }
+
         }
 
         private void ConnectToTwitch(Int32 tryCount = 0)
@@ -153,5 +189,6 @@ namespace StreamCommandBooper
             Windows.Authentication auth = new Windows.Authentication();
             auth.ShowDialog();
         }
+
     }
 }

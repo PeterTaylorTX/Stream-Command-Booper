@@ -26,7 +26,7 @@ namespace Twitch
         /// </summary>
         private static string configFile = $"{appDataFolder}\\TwitchConfig.cfg";
 
-        public string authScopes = "channel:bot+chat:edit+chat:read+moderator:manage:banned_users+moderation:read+moderator:manage:blocked_terms+user:read:moderated_channels+channel:moderate";
+        public string authScopes = "channel:bot+chat:edit+chat:read+moderator:manage:banned_users+moderation:read+moderator:manage:blocked_terms+user:read:moderated_channels+channel:moderate+user:read:moderated_channels";
         /// <summary>
         /// The Twitch Client ID
         /// </summary>

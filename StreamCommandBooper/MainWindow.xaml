@@ -6,8 +6,8 @@
         xmlns:Converters="clr-namespace:StreamCommandBooper.Helpers.Converters"
         xmlns:strings="clr-namespace:StreamCommandBooper.Resources.Localisation"
         xmlns:local="clr-namespace:StreamCommandBooper"
-        mc:Ignorable="d"
-        Title="{x:Static strings:UI.AppName}" Height="420" Width="530" MinHeight="420" MinWidth="530" Background="{StaticResource appBackground}">
+        mc:Ignorable="d" Loaded="Window_Loaded"
+        Title="{x:Static strings:UI.AppName}" Height="420" Width="590" MinHeight="420" MinWidth="590" Background="{StaticResource appBackground}">
     <Window.Resources>
         <Converters:BoolInverseConverter x:Key="BoolInverseConverter"/>
     </Window.Resources>
@@ -27,11 +27,11 @@
                         <Label Content="{x:Static strings:UI.Configuration}"/>
                         <StackPanel Orientation="Horizontal">
                             <Label Content="{x:Static strings:UI.Channel}" Width="70"/>
-                            <TextBox Width="100" Text="{Binding Path=CurrentChannel, Mode=TwoWay}" />
+                            <ComboBox Width="150" ItemsSource="{Binding Channels}" SelectedValue="{Binding CurrentChannel}" />
                         </StackPanel>
                         <StackPanel Orientation="Horizontal">
                             <Label Content="{x:Static strings:UI.Delay_ms}" Width="70"/>
-                            <TextBox Width="100" Text="{Binding Delay}"/>
+                            <TextBox Width="150" Text="{Binding Delay}"/>
                         </StackPanel>
                         <Label Content="{x:Static strings:UI.Delay_Recommended}" />
                     </StackPanel>
@@ -63,7 +63,7 @@
 
         <StackPanel Orientation="Horizontal" VerticalAlignment="Bottom" HorizontalAlignment="Left">
             <Label Content="{x:Static strings:UI.Version}"/>
-            <Label Content="v0.3"/>
+            <Label Content="v04"/>
         </StackPanel>
     </Grid>
 </Window>
