@@ -48,9 +48,12 @@ namespace StreamCommandBooper.Windows
         /// </summary>
         private async void btnSave_Clicked(object sender, RoutedEventArgs e)
         {
-            MainWindow.Client.Connect(); // Config saves on connection
+            var userDetails = await Twitch.APIs.Users.GetUsersAsync(null, new List<string>() { Twitch.Config.ChannelName });
+            if(userDetails == null) { return; }
+
+            this.TwitchConfig.channelID = userDetails.Data[0].ID;
             await Twitch.Config.SaveAsync();
-            if (MainWindow.Client.Initialized) { this.Close(); }
+            this.Close();
         }
 
         /// <summary>

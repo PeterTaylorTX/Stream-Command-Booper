@@ -1,12 +1,6 @@
 ﻿using System.ComponentModel;
 using System.Windows;
 using Twitch;
-using TwitchLib.Api;
-using TwitchLib.Api.Helix;
-using TwitchLib.Api.Helix.Models.Extensions.ReleasedExtensions;
-using TwitchLib.Api.Helix.Models.Moderation.BanUser;
-using TwitchLib.Client.Events;
-using TwitchLib.Client.Extensions;
 
 namespace StreamCommandBooper
 {
@@ -29,7 +23,6 @@ namespace StreamCommandBooper
         /// <summary>
         /// The Twitch Client
         /// </summary>
-        public static Twitch.Client Client { get; set; } = new Twitch.Client();
         public Twitch.Config TwitchConfig { get; set; } = new();
         public string? CurrentChannel { get { return _CurrentChannel; } set { _CurrentChannel = value; OnPropertyChanged(nameof(CurrentChannel)); } }
         private string? _CurrentChannel;
@@ -70,14 +63,13 @@ namespace StreamCommandBooper
 
         protected async Task GetChannels()
         {
-            TwitchAPI tAPI = new TwitchAPI();
-            var Mod = await Twitch.APIs.Users.User.GetAsync(null, new List<string> { Twitch.Config.ChannelName });
-            
+            var Mod = await Twitch.APIs.Users.GetUsersAsync(null, new List<string> { Twitch.Config.ChannelName });
+
             if (Mod.Data.Count > 0)
             {
                 this.Channels.Clear();
 
-                var Channels = await Twitch.APIs.Users.User_Moderation_Channels.GetAsync(Mod.Data[0].ID);
+                var Channels = await Twitch.APIs.Users.GetModerationChannelsAsync(Mod.Data[0].ID);
                 if (Channels.Data == null) { return; }
 
                 this.Channels.Add(Twitch.Config.ChannelName);
@@ -90,34 +82,16 @@ namespace StreamCommandBooper
 
         }
 
-        private void ConnectToTwitch(Int32 tryCount = 0)
+        private void ConnectToTwitch()
         {
             if (this.CurrentChannel == null) { return; }
-            if (!Client.Initialized) { this.isLoggedIn = Client.Connect(); }
+            var userDetails = Twitch.APIs.Users.GetUsersAsync(null, new List<string>() { Twitch.Config.ChannelName });
+            this.isLoggedIn = (userDetails != null);
 
-            if (this.isLoggedIn)
-            {
-                if (Client.TwitchClient.JoinedChannels.Where(c => c.Channel.ToLower() == this.CurrentChannel?.ToLower()).Count() == 0)
-                {
-                    Client.TwitchClient.JoinChannel(this.CurrentChannel);
-                }
-                //Client.TwitchClient.OnMessageReceived += TwitchClient_OnMessageReceived;
-            }
-            else
+            if (!this.isLoggedIn)
             { // If connection fails, open the settings page
                 Windows.Authentication AuthWindow = new Windows.Authentication();
                 AuthWindow.ShowDialog();
-            }
-
-            tryCount++;
-            if (tryCount > 2) { App.Current.Shutdown(); }
-        }
-
-        private void TwitchClient_OnMessageReceived(object? sender, OnMessageReceivedArgs e)
-        {
-            if (e.ChatMessage.Message.ToLower() == "too many")
-            {
-                //STOP
             }
         }
 
@@ -137,15 +111,14 @@ namespace StreamCommandBooper
             if (string.IsNullOrWhiteSpace(this.CurrentChannel)) { return; }
             if (string.IsNullOrWhiteSpace(Twitch.Config.ChannelName)) { return; }
 
-            TwitchAPI tAPI = new TwitchAPI();
-            var Channel = await tAPI.Helix.Users.GetUsersAsync(null, new List<string> { this.CurrentChannel }, Twitch.Config.OAuthToken);
-            var ModID = await tAPI.Helix.Users.GetUsersAsync(null, new List<string> { Twitch.Config.ChannelName }, Twitch.Config.OAuthToken);
+            var Channel = await Twitch.APIs.Users.GetUsersAsync(null, new List<string> { this.CurrentChannel });
+            var ModID = await Twitch.APIs.Users.GetUsersAsync(null, new List<string> { Twitch.Config.ChannelName });
 
             string[] commandLines = this.CommandLines.Split(Environment.NewLine);
             this.Stat_Remaining = commandLines.Length;
             this.Stat_Processed = 0;
 
-            Client.TwitchClient.SendMessage(this.CurrentChannel, $"Started: {DateTime.Now.ToString("HH:mm:ss")}");
+            await Twitch.APIs.Chat.SendMessageAsync(Channel.Data[0].ID, $"Started: {DateTime.Now.ToString("HH:mm:ss")}");
             foreach (string line in commandLines)
             {
                 await Task.Delay(this.Delay);
@@ -159,14 +132,13 @@ namespace StreamCommandBooper
                     string reason = string.Empty;
                     if (command.Length >= 2) { viewer = command[1]; } else { continue; }
                     if (command.Length >= 3) { reason = line.Replace($"/ban {viewer} ", string.Empty); }
-                    var UserIDs = await tAPI.Helix.Users.GetUsersAsync(null, new List<string> { viewer }, Twitch.Config.OAuthToken);
-                    if (UserIDs != null && UserIDs.Users != null && UserIDs.Users.Count() > 0) { viewer = UserIDs.Users[0].Id; }
-
-                    BanUserRequest request = new BanUserRequest { UserId = viewer, Reason = reason };
+                    var UserIDs = await Twitch.APIs.Users.GetUsersAsync(null, new List<string> { viewer });
+                    if (UserIDs == null || UserIDs.Data == null || UserIDs.Data.Count() == 0) { continue; }
+                    viewer = UserIDs.Data[0].ID;
 
                     try
                     {
-                        await tAPI.Helix.Moderation.BanUserAsync(Channel.Users[0].Id, ModID.Users[0].Id, request, Twitch.Config.OAuthToken);
+                        await Twitch.APIs.Users.BanUserAsync(Channel.Data[0].ID, UserIDs.Data[0].ID, reason);
                     }
                     catch { }
 
@@ -174,11 +146,11 @@ namespace StreamCommandBooper
                     continue;
                 }
 
-                Client.TwitchClient.SendMessage(this.CurrentChannel, line);
+                await Twitch.APIs.Chat.SendMessageAsync(Channel.Data[0].ID, line);
                 this.CommandLines = this.CommandLines.Replace($"{line}\r\n", string.Empty);
             }
 
-            Client.TwitchClient.SendMessage(this.CurrentChannel, $"Completed: {DateTime.Now.ToString("HH:mm:ss")}");
+            await Twitch.APIs.Chat.SendMessageAsync(Channel.Data[0].ID, $"Completed: {DateTime.Now.ToString("HH:mm:ss")}");
             this.CommandLines = string.Empty;
         }
 

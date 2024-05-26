@@ -26,11 +26,15 @@ namespace Twitch
         /// </summary>
         private static string configFile = $"{appDataFolder}\\TwitchConfig.cfg";
 
-        static string authScopes = "channel:bot+chat:edit+chat:read+moderator:manage:banned_users+moderation:read+moderator:manage:blocked_terms+user:read:moderated_channels+channel:moderate+user:read:moderated_channels";
+        static string authScopes = "channel:bot+user:write:chat+chat:edit+chat:read+moderator:manage:banned_users+moderation:read+moderator:manage:blocked_terms+user:read:moderated_channels+channel:moderate+user:read:moderated_channels";
         /// <summary>
         /// The Twitch Client ID
         /// </summary>
         public static string ClientID { get; set; } = string.Empty;
+        /// <summary>
+        /// Twitch Channel ID
+        /// </summary>
+        public static string ChannelID { get; set; } = string.Empty;
         /// <summary>
         /// Twitch Channel Name
         /// </summary>
@@ -44,7 +48,11 @@ namespace Twitch
         /// <summary>
         /// The Twitch Client ID
         /// </summary>
-        public string clientID { get { return ClientID; } set { ClientID = value; } } 
+        public string clientID { get { return ClientID; } set { ClientID = value; } }
+        /// <summary>
+        /// Twitch Channel ID
+        /// </summary>
+        public string channelID { get { return ChannelID; } set { ChannelID = value; } }
         /// <summary>
         /// Twitch Channel Name
         /// </summary>
@@ -112,6 +120,7 @@ namespace Twitch
             ClientID = config.Value.clientID;
             ChannelName = config.Value.channelName;
             OAuthToken = config.Value.oAuthToken;
+            ChannelID = config.Value.channelID;
         }
 
         /// <summary>
@@ -119,7 +128,7 @@ namespace Twitch
         /// </summary>
         public static async Task SaveAsync()
         {
-            SaveData data = new SaveData() { clientID = ClientID, channelName = ChannelName, oAuthToken = OAuthToken };
+            SaveData data = new SaveData() { clientID = ClientID, channelName = ChannelName, oAuthToken = OAuthToken, channelID = ChannelID };
 
             if (!System.IO.Directory.Exists(appDataRoot)) { System.IO.Directory.CreateDirectory(appDataRoot); }
             if (!System.IO.Directory.Exists(appDataFolder)) { System.IO.Directory.CreateDirectory(appDataFolder); }
@@ -130,7 +139,7 @@ namespace Twitch
         /// </summary>
         public static void Save()
         {
-            SaveData data = new SaveData() { clientID = ClientID, channelName = ChannelName, oAuthToken = OAuthToken };
+            SaveData data = new SaveData() { clientID = ClientID, channelName = ChannelName, oAuthToken = OAuthToken, channelID = ChannelID };
 
             if (!System.IO.Directory.Exists(appDataRoot)) { System.IO.Directory.CreateDirectory(appDataRoot); }
             if (!System.IO.Directory.Exists(appDataFolder)) { System.IO.Directory.CreateDirectory(appDataFolder); }
@@ -154,7 +163,10 @@ namespace Twitch
             /// OAuth Token
             /// </summary>
             public string oAuthToken;
-
+            // <summary>
+            /// Twitch Channel ID
+            /// </summary>
+            public string channelID;
         }
     }
 }
