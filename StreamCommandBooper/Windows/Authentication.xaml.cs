@@ -31,16 +31,14 @@ namespace StreamCommandBooper.Windows
 
         }
         #endregion
-
+        public Twitch.Config TwitchConfig { get; set; } = new();
         public Visibility ShowOAuthEntry { get { return _ShowOAuthEntry; } set { _ShowOAuthEntry = value; OnPropertyChanged(nameof(ShowOAuthEntry)); } }
         Visibility _ShowOAuthEntry = Visibility.Collapsed;
         public Visibility ShowOAuthEntryButton { get { return _ShowOAuthEntryButton; } set { _ShowOAuthEntryButton = value; OnPropertyChanged(nameof(ShowOAuthEntryButton)); } }
         Visibility _ShowOAuthEntryButton = Visibility.Visible;
-        public Twitch.Client Client { get; set; }
         public Authentication()
         {
             InitializeComponent();
-            this.Client = MainWindow.Client;
             this.DataContext = this;
         }
 

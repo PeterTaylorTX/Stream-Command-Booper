@@ -18,7 +18,7 @@
                 <Border Style="{StaticResource Group}">
                     <StackPanel Orientation="Vertical">
                         <Label Content="{x:Static strings:UI.Logged_In_As}"/>
-                        <Label Content="{Binding Client.TwitchClient.TwitchUsername}"/>
+                        <Label Content="{Binding TwitchConfig.channelName}"/>
                         <Button Content="{x:Static strings:UI.Log_In}" IsEnabled="{Binding isProcessing, Converter={StaticResource BoolInverseConverter}}" Click="btnLogIn_Clicked"/>
                     </StackPanel>
                 </Border>

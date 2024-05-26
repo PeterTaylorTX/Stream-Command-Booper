@@ -30,6 +30,7 @@ namespace StreamCommandBooper
         /// The Twitch Client
         /// </summary>
         public static Twitch.Client Client { get; set; } = new Twitch.Client();
+        public Twitch.Config TwitchConfig { get; set; } = new();
         public string? CurrentChannel { get { return _CurrentChannel; } set { _CurrentChannel = value; OnPropertyChanged(nameof(CurrentChannel)); } }
         private string? _CurrentChannel;
         public string CommandLines { get { return _CommandLines; } set { _CommandLines = value; OnPropertyChanged(nameof(CommandLines)); } }
@@ -106,7 +107,6 @@ namespace StreamCommandBooper
             { // If connection fails, open the settings page
                 Windows.Authentication AuthWindow = new Windows.Authentication();
                 AuthWindow.ShowDialog();
-                Client = AuthWindow.Client;
             }
 
             tryCount++;

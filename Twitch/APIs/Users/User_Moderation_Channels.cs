@@ -36,6 +36,7 @@ namespace Twitch.APIs.Users
 
         /// <summary>
         /// Get a list of all channels the User is a Moderator for.
+        /// UserID must match the user ID in the User-Access token.
         /// Requires OAuth Scope: user:read:moderated_channels
         /// </summary>
         /// <param name="UserID">The User ID (Not the Username)</param>

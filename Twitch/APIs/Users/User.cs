@@ -34,6 +34,7 @@ namespace Twitch.APIs.Users
 
         /// <summary>
         /// Get a list of User details. Max 100 Usernames and ID (Combined)
+        /// Requires an app access token or user access token.
         /// To access the Email address, scope required: user:read:email is not provided, email will be empty
         /// </summary>
         /// <param name="UserIDs">A list of User ID (Not Usernames)</param>

@@ -40,6 +40,21 @@ namespace Twitch
         /// </summary>
         public static string OAuthToken { get; set; } = string.Empty;
 
+
+        /// <summary>
+        /// The Twitch Client ID
+        /// </summary>
+        public string clientID { get { return ClientID; } set { ClientID = value; } } 
+        /// <summary>
+        /// Twitch Channel Name
+        /// </summary>
+        public string channelName { get { return ChannelName; } set { ChannelName = value; } }
+        /// <summary>
+        /// OAuth Token
+        /// </summary>
+        public string oAuthToken { get { return OAuthToken; } set { OAuthToken = value; } }
+
+
         public static void GetOAuthToken()
         {
             getToken();
