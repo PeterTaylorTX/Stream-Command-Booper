@@ -40,7 +40,7 @@ namespace StreamCommandBooper
         Int32 _Stat_Remaining = 0;
         public List<String> Channels { get { return _Channels; } set { _Channels = value; OnPropertyChanged(nameof(Channels)); } }
         List<String> _Channels { get; set; } = new();
-
+        protected bool AbortProcessing = false;
         public MainWindow()
         {
             InitializeComponent();
@@ -110,6 +110,7 @@ namespace StreamCommandBooper
         {
             if (string.IsNullOrWhiteSpace(this.CurrentChannel)) { return; }
             if (string.IsNullOrWhiteSpace(Twitch.Config.ChannelName)) { return; }
+            this.AbortProcessing = false;
 
             var Channel = await Twitch.APIs.Users.GetUsersAsync(null, new List<string> { this.CurrentChannel });
             var ModID = await Twitch.APIs.Users.GetUsersAsync(null, new List<string> { Twitch.Config.ChannelName });
@@ -121,7 +122,10 @@ namespace StreamCommandBooper
             await Twitch.APIs.Chat.SendMessageAsync(Channel.Data[0].ID, $"Started: {DateTime.Now.ToString("HH:mm:ss")}");
             foreach (string line in commandLines)
             {
+                if(this.AbortProcessing) { return; }
                 await Task.Delay(this.Delay);
+                if (this.AbortProcessing) { return; }
+
                 this.Stat_Remaining -= 1;
                 this.Stat_Processed += 1;
 
@@ -145,6 +149,12 @@ namespace StreamCommandBooper
             this.CommandLines = string.Empty;
         }
 
+        /// <summary>
+        /// Add blocked term
+        /// </summary>
+        /// <param name="ChannelID"></param>
+        /// <param name="line"></param>
+        /// <returns></returns>
         private async Task AddBlockedTerm(string ChannelID, string line)
         {
             string[] command = line.Split(" ");
@@ -194,5 +204,14 @@ namespace StreamCommandBooper
             auth.ShowDialog();
         }
 
+        /// <summary>
+        /// Stop processing the list
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void btnStopProcessCommands_Clicked(object sender, RoutedEventArgs e)
+        {
+            this.AbortProcessing = true;
+        }
     }
 }

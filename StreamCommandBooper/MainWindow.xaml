@@ -62,7 +62,10 @@
                     <StackPanel Orientation="Vertical">
                         <Label Content="{x:Static strings:UI.Commands_Title}"/>
                         <TextBox Width="500" Height="300" TextWrapping="NoWrap" AcceptsReturn="True" VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Auto" VerticalContentAlignment="Top" Text="{Binding CommandLines, Mode=TwoWay}"/>
+                        <StackPanel Orientation="Horizontal">
                         <Button Content="{x:Static strings:UI.Start}" IsEnabled="{Binding isProcessing, Converter={StaticResource BoolInverseConverter}}" Click="btnProcessCommands_Clicked" HorizontalAlignment="Left" />
+                        <Button Content="{x:Static strings:UI.Stop}" IsEnabled="{Binding isProcessing}" Click="btnStopProcessCommands_Clicked" HorizontalAlignment="Left" Margin="10,0,0,0" />
+                        </StackPanel>
                     </StackPanel>
                 </Border>
             </StackPanel>
