@@ -8,7 +8,6 @@
     <Brush x:Key="ButtonBackground_Inactive">#808080</Brush>
     <Brush x:Key="ButtonForeground">White</Brush>
     <Brush x:Key="Foreground">White</Brush>
-    <Brush x:Key="ActiveBorderBrush">044d00</Brush>
     <Brush x:Key="Colour_ComboActive">#3399AA</Brush>
     <Brush x:Key="Colour_ComboHover">#33BBBB</Brush>
     <Brush x:Key="Colour_ComboText">#bbbbbb</Brush>

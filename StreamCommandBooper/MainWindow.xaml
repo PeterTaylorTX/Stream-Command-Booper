@@ -7,7 +7,7 @@
         xmlns:strings="clr-namespace:StreamCommandBooper.Resources.Localisation"
         xmlns:local="clr-namespace:StreamCommandBooper"
         mc:Ignorable="d" Loaded="Window_Loaded"
-        Title="{x:Static strings:UI.AppName}" Height="420" Width="590" MinHeight="420" MinWidth="590" Background="{StaticResource appBackground}">
+        Title="{x:Static strings:UI.AppName}" Height="420" Width="780" MinHeight="420" MinWidth="780" Background="{StaticResource appBackground}">
     <Window.Resources>
         <Converters:BoolInverseConverter x:Key="BoolInverseConverter"/>
     </Window.Resources>
@@ -54,8 +54,8 @@
                 <Border Style="{StaticResource Group}">
                     <StackPanel Orientation="Vertical">
                         <Label Content="{x:Static strings:UI.Commands_Title}"/>
-                        <TextBox MinWidth="300" Height="300" TextWrapping="NoWrap" AcceptsReturn="True" VerticalScrollBarVisibility="Visible" VerticalContentAlignment="Top" Text="{Binding CommandLines, Mode=TwoWay}"/>
-                        <Button Content="{x:Static strings:UI.Start}" IsEnabled="{Binding isProcessing, Converter={StaticResource BoolInverseConverter}}" Click="btnProcessCommands_Clicked" />
+                        <TextBox Width="500" Height="300" TextWrapping="NoWrap" AcceptsReturn="True" VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Auto" VerticalContentAlignment="Top" Text="{Binding CommandLines, Mode=TwoWay}"/>
+                        <Button Content="{x:Static strings:UI.Start}" IsEnabled="{Binding isProcessing, Converter={StaticResource BoolInverseConverter}}" Click="btnProcessCommands_Clicked" HorizontalAlignment="Left" />
                     </StackPanel>
                 </Border>
             </StackPanel>
@@ -63,7 +63,7 @@
 
         <StackPanel Orientation="Horizontal" VerticalAlignment="Bottom" HorizontalAlignment="Left">
             <Label Content="{x:Static strings:UI.Version}"/>
-            <Label Content="v04"/>
+            <Label Content="v0.5"/>
         </StackPanel>
     </Grid>
 </Window>
