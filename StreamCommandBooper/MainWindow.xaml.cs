@@ -73,7 +73,7 @@ namespace StreamCommandBooper
                 if (Channels.Data == null) { return; }
 
                 this.Channels.Add(Twitch.Config.ChannelName);
-                foreach (var user in Channels.Data)
+                foreach (var user in Channels.Data.OrderBy(channel => channel.Broadcaster_Login))
                 {
                     this.Channels.Add(user.Broadcaster_Login);
                 }
