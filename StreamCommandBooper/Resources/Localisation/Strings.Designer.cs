@@ -59,5 +59,77 @@ namespace StreamCommandBooper.Resources.Localisation {
                 resourceCulture = value;
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Authentication.
+        /// </summary>
+        internal static string Authentication {
+            get {
+                return ResourceManager.GetString("Authentication", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Authentication Failed, please try again.
+        /// </summary>
+        internal static string Authentication_Failed {
+            get {
+                return ResourceManager.GetString("Authentication_Failed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Channle ID is missing, please log in again.
+        /// </summary>
+        internal static string Missing_ChannelID {
+            get {
+                return ResourceManager.GetString("Missing_ChannelID", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Channel Name is missing, please log in again.
+        /// </summary>
+        internal static string Missing_ChannelName {
+            get {
+                return ResourceManager.GetString("Missing_ChannelName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No command lines to process.
+        /// </summary>
+        internal static string Missing_CommandLines {
+            get {
+                return ResourceManager.GetString("Missing_CommandLines", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No Channel selected.
+        /// </summary>
+        internal static string Missing_CurrentChannel {
+            get {
+                return ResourceManager.GetString("Missing_CurrentChannel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Missing Item.
+        /// </summary>
+        internal static string Missing_Item {
+            get {
+                return ResourceManager.GetString("Missing_Item", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to OAuth Token is missing, please log in again.
+        /// </summary>
+        internal static string Missing_OAuthToken {
+            get {
+                return ResourceManager.GetString("Missing_OAuthToken", resourceCulture);
+            }
+        }
     }
 }

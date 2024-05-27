@@ -1,4 +1,6 @@
-﻿using System;
+﻿using StreamCommandBooper.Helpers;
+using StreamCommandBooper.Resources.Localisation;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -64,7 +66,7 @@ namespace StreamCommandBooper.Windows
             try
             {
                 var userDetails = await Twitch.APIs.Users.GetUsersAsync(null, new List<string>() { Twitch.Config.ChannelName });
-                if (userDetails == null) { return; }
+                if (userDetails == null) { MessageBox2.ShowDialog(Strings.Authentication, Strings.Authentication, Strings.Authentication_Failed); return; }
 
                 this.TwitchConfig.channelID = userDetails.Data[0].ID;
                 await Twitch.Config.SaveAsync();

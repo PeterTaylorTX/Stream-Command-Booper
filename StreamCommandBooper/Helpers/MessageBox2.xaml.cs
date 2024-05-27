@@ -74,6 +74,7 @@ namespace StreamCommandBooper.Helpers
             dialog.Title = MessageTitle;
             dialog.MessageType = MessageType;
             dialog.Message = Message; 
+            dialog.DataContext = dialog;
             dialog.ShowDialog();
         }
 

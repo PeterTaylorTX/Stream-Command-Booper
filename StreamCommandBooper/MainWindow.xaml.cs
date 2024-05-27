@@ -1,5 +1,7 @@
-﻿using System.ComponentModel;
+﻿using StreamCommandBooper.Helpers;
+using System.ComponentModel;
 using System.Windows;
+using StreamCommandBooper.Resources.Localisation;
 using Twitch;
 
 namespace StreamCommandBooper
@@ -142,11 +144,12 @@ namespace StreamCommandBooper
         {
             try
             {
-                if (string.IsNullOrWhiteSpace(this.CurrentChannel)) { return; }
-                if (string.IsNullOrWhiteSpace(TwitchConfig.oAuthToken)) { return; }
-                if (string.IsNullOrWhiteSpace(TwitchConfig.channelName)) { return; }
-                if (string.IsNullOrWhiteSpace(TwitchConfig.channelID)) { return; }
-                if (string.IsNullOrWhiteSpace(this.CommandLines)) { return; }
+                string messageTitle = Strings.Missing_Item;
+                if (string.IsNullOrWhiteSpace(this.CurrentChannel)) { MessageBox2.ShowDialog(messageTitle, messageTitle, Strings.Missing_CurrentChannel); return; }
+                if (string.IsNullOrWhiteSpace(TwitchConfig.oAuthToken)) { MessageBox2.ShowDialog(messageTitle, messageTitle, Strings.Missing_OAuthToken); return; }
+                if (string.IsNullOrWhiteSpace(TwitchConfig.channelName)) { MessageBox2.ShowDialog(messageTitle, messageTitle, Strings.Missing_ChannelName); return; }
+                if (string.IsNullOrWhiteSpace(TwitchConfig.channelID)) { MessageBox2.ShowDialog(messageTitle, messageTitle, Strings.Missing_ChannelID); return; }
+                if (string.IsNullOrWhiteSpace(this.CommandLines)) { MessageBox2.ShowDialog(messageTitle, messageTitle, Strings.Missing_CommandLines); return; }
                 this.isProcessing = true;
                 this.ConnectToTwitch();
 

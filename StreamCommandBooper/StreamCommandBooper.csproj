@@ -6,7 +6,12 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UseWPF>true</UseWPF>
+    <ApplicationIcon>Resources\Images\Smudge_56.ico</ApplicationIcon>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Content Include="Resources\Images\Smudge_56.ico" />
+  </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Twitch\Twitch.csproj" />
