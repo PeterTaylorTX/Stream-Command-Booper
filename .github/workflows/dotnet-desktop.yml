@@ -72,10 +72,10 @@ jobs:
 
     # Restore the application to populate the obj folder with RuntimeIdentifiers
     - name: Restore the application
-      run: msbuild $env:Solution_Name /t:Restore /p:Configuration=$env:Configuration
+      run: dotnet restore $env:Solution_Name 
 
 # Build the application 
     - name: Build the application
-      run: msbuild $env:Solution_Name /t:Build /p:Configuration==$env:Configuration /p:TargetFrameworkVersion=v8.0
+      run: dotnet build $env:Solution_Name --configuration $env:Configuration
 
     
