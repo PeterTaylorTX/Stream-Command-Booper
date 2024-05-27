@@ -1,14 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static System.Runtime.InteropServices.JavaScript.JSType;
-using Twitch.APIs;
-using System.Net.NetworkInformation;
-using System.Numerics;
-using System.Threading;
-
+﻿
 namespace Twitch.Models
 {
     public class Chat
