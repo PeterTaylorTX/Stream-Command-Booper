@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -12,14 +13,11 @@ namespace Twitch.Helpers
         /// A http Get request
         /// </summary>
         /// <param name="URL">The API RURL</param>
-        public async static Task<object?> Get(string URL, Dictionary<string, string> headers)
+        public async static Task<object?> Get(string URL)
         {
             HttpClient client = new HttpClient();
-
-            foreach (KeyValuePair<string, string> kvp in headers)
-            {
-                client.DefaultRequestHeaders.Add(kvp.Key, kvp.Value);
-            }
+            client.DefaultRequestHeaders.Add("Authorization", Twitch.Config.OAuthToken);
+            client.DefaultRequestHeaders.Add("Client-Id", Twitch.Config.ClientID);
 
             using (var response = await client.GetAsync(URL))
             {
@@ -35,20 +33,17 @@ namespace Twitch.Helpers
         /// <param name="URL">The API URL</param>
         /// <param name="content">The content to send to the API</param>
         /// <returns></returns>
-        public async static Task<object?> Post(string URL, Dictionary<string, string> headers, object content)
+        public async static Task<object?> Post(string URL, object content)
         {
             HttpClient client = new HttpClient();
-
-            foreach (KeyValuePair<string, string> kvp in headers)
-            {
-                client.DefaultRequestHeaders.Add(kvp.Key, kvp.Value);
-            }
+            client.DefaultRequestHeaders.Add("Authorization", Twitch.Config.OAuthToken);
+            client.DefaultRequestHeaders.Add("Client-Id", Twitch.Config.ClientID);
 
             StringContent Content;
             if (content.GetType() == typeof(string))
             {
                 string? strContent = content.ToString();
-                if(strContent == null) { return null; }
+                if (strContent == null) { return null; }
                 Content = new StringContent(strContent, System.Text.Encoding.UTF8, "application/json");
             }
             else

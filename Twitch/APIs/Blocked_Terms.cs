@@ -18,13 +18,10 @@ namespace Twitch.APIs
         /// <returns></returns>
         public static async Task<Models.Blocked_Terms.Blocked_Terms_Response> BlockTermAsync(string ChannelID, string Term)
         {
-            Dictionary<string, string> authHeaders = new();
-            authHeaders.Add("Authorization", $"Bearer {Twitch.Config.OAuthToken}");
-            authHeaders.Add("Client-Id", Twitch.Config.ClientID);
             string URL = $"https://api.twitch.tv/helix/moderation/blocked_terms?broadcaster_id={ChannelID}&moderator_id={Config.ChannelID}";
             var request = new Models.Blocked_Terms.Blocked_Terms_Request() { text = Term };
 
-            string? result = (string?)await Twitch.Helpers.httpRequests.Post(URL, authHeaders, request);
+            string? result = (string?)await Twitch.Helpers.httpRequests.Post(URL, request);
             if (result == null) { return new(); }
 
             Models.Blocked_Terms.Blocked_Terms_Response? response = Newtonsoft.Json.JsonConvert.DeserializeObject<Models.Blocked_Terms.Blocked_Terms_Response>(result);

@@ -38,9 +38,6 @@ namespace Twitch.APIs
         /// <returns></returns>
         public static async Task<Models.Chat.Chat_Messages> SendMessageAsync(string ChannelID, string Message)
         {
-            Dictionary<string, string> authHeaders = new();
-            authHeaders.Add("Authorization", $"Bearer {Twitch.Config.OAuthToken}");
-            authHeaders.Add("Client-Id", Twitch.Config.ClientID);
             string URL = $"https://api.twitch.tv/helix/chat/messages";
 
             ChatMessage message = new ChatMessage()
@@ -50,7 +47,7 @@ namespace Twitch.APIs
                 sender_id = Config.ChannelID
             };
 
-            string? result = (string?)await Twitch.Helpers.httpRequests.Post(URL, authHeaders, message);
+            string? result = (string?)await Twitch.Helpers.httpRequests.Post(URL, message);
             if (result == null) { return new(); }
 
             Models.Chat.Chat_Messages? response = Newtonsoft.Json.JsonConvert.DeserializeObject<Models.Chat.Chat_Messages>(result);

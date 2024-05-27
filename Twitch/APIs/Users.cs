@@ -17,9 +17,6 @@ namespace Twitch.APIs
         /// <param name="Usernames">A list of Usernames (Not User IDs)</param>
         public static async Task<Models.Users.Channels> GetUsersAsync(List<String>? UserIDs = null, List<string>? Usernames = null)
         {
-            Dictionary<string, string> authHeaders = new();
-            authHeaders.Add("Authorization", $"Bearer {Twitch.Config.OAuthToken}");
-            authHeaders.Add("Client-Id", Twitch.Config.ClientID);
             string URL = $"https://api.twitch.tv/helix/users?";
 
             if (UserIDs != null)
@@ -38,7 +35,7 @@ namespace Twitch.APIs
             }
             URL = URL.Replace("?&", "?");
 
-            string? result = (string?)await Twitch.Helpers.httpRequests.Get(URL, authHeaders);
+            string? result = (string?)await Twitch.Helpers.httpRequests.Get(URL);
             if (result == null) { return new(); }
 
             Models.Users.Channels? users = Newtonsoft.Json.JsonConvert.DeserializeObject<Models.Users.Channels>(result);
@@ -58,16 +55,14 @@ namespace Twitch.APIs
         /// <returns></returns>
         public static async Task<Models.Users.User_Moderation_Channels> GetModerationChannelsAsync(string UserID, Int32 MaxNumberPerPage = 100, Int32 Page = 0)
         {
-            Dictionary<string, string> authHeaders = new();
-            authHeaders.Add("Authorization", $"Bearer {Twitch.Config.OAuthToken}");
-            authHeaders.Add("Client-Id", Twitch.Config.ClientID);
             string URL = $"https://api.twitch.tv/helix/moderation/channels?user_id={UserID}&first{MaxNumberPerPage}";
             if (Page > 0) { URL += $"&after={Page}"; } // If requesting the results in pages
 
-            string? result = (string?)await Twitch.Helpers.httpRequests.Get(URL, authHeaders);
+            string? result = (string?)await Twitch.Helpers.httpRequests.Get(URL);
             if (result == null) { return new(); }
 
-            Models.Users.User_Moderation_Channels channels = Newtonsoft.Json.JsonConvert.DeserializeObject<Models.Users.User_Moderation_Channels>(result);
+            Models.Users.User_Moderation_Channels? channels = Newtonsoft.Json.JsonConvert.DeserializeObject<Models.Users.User_Moderation_Channels>(result);
+            if(channels == null) { return new(); }
             return channels;
         }
 
@@ -81,9 +76,6 @@ namespace Twitch.APIs
         /// <returns></returns>
         public static async Task<Models.Users.Ban_User_Response> BanUserAsync(string ChannelID, string UserID, string Reason = "")
         {
-            Dictionary<string, string> authHeaders = new();
-            authHeaders.Add("Authorization", $"Bearer {Twitch.Config.OAuthToken}");
-            authHeaders.Add("Client-Id", Twitch.Config.ClientID);
             string URL = $"https://api.twitch.tv/helix/moderation/bans?broadcaster_id={ChannelID}&moderator_id={Config.ChannelID}";
             var BanRequest = new Models.Users.Ban_User_Request()
             {
@@ -94,7 +86,7 @@ namespace Twitch.APIs
                 }
             };
 
-            string? result = (string?)await Twitch.Helpers.httpRequests.Post(URL, authHeaders, BanRequest);
+            string? result = (string?)await Twitch.Helpers.httpRequests.Post(URL, BanRequest);
             if (result == null) { return new(); }
 
             Models.Users.Ban_User_Response? response = Newtonsoft.Json.JsonConvert.DeserializeObject<Models.Users.Ban_User_Response>(result);
@@ -113,9 +105,6 @@ namespace Twitch.APIs
         /// <returns></returns>
         public static async Task<Models.Users.Ban_User_Response> TimeoutUserAsync(string ChannelID, string UserID, Int32 Duration, string Reason = "")
         {
-            Dictionary<string, string> authHeaders = new();
-            authHeaders.Add("Authorization", $"Bearer {Twitch.Config.OAuthToken}");
-            authHeaders.Add("Client-Id", Twitch.Config.ClientID);
             string URL = $"https://api.twitch.tv/helix/moderation/bans?broadcaster_id={ChannelID}&moderator_id={Config.ChannelID}";
             var TimeoutRequest = new Models.Users.Timeout_User_Request()
             {
@@ -127,7 +116,7 @@ namespace Twitch.APIs
                 }
             };
 
-            string? result = (string?)await Twitch.Helpers.httpRequests.Post(URL, authHeaders, TimeoutRequest);
+            string? result = (string?)await Twitch.Helpers.httpRequests.Post(URL, TimeoutRequest);
             if (result == null) { return new(); }
 
             Models.Users.Ban_User_Response? response = Newtonsoft.Json.JsonConvert.DeserializeObject<Models.Users.Ban_User_Response>(result);
