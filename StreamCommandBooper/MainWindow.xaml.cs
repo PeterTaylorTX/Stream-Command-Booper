@@ -142,6 +142,7 @@ namespace StreamCommandBooper
         {
             try
             {
+                if (string.IsNullOrWhiteSpace(this.CurrentChannel)) { return; }
                 if (string.IsNullOrWhiteSpace(TwitchConfig.oAuthToken)) { return; }
                 if (string.IsNullOrWhiteSpace(TwitchConfig.channelName)) { return; }
                 if (string.IsNullOrWhiteSpace(TwitchConfig.channelID)) { return; }

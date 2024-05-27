@@ -10,7 +10,7 @@
     <Grid>
         <Label Content="{Binding MessageType}" Style="{StaticResource Title}" VerticalAlignment="Top"/>
         <ScrollViewer VerticalScrollBarVisibility="Auto" Margin="0,30,0,50">
-                <TextBlock Text="{Binding Message}"     Margin="5" TextWrapping="Wrap"/>
+                <TextBlock Text="{Binding Message}" Margin="5" TextWrapping="Wrap" Style="{StaticResource Direct}"/>
         </ScrollViewer>
 
         <Button Content="{x:Static strings:UI.OK}"  Margin="10" Click="btnOK_Clicked" VerticalAlignment="Bottom"/>

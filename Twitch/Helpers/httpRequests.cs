@@ -16,7 +16,7 @@ namespace Twitch.Helpers
         public async static Task<object?> Get(string URL)
         {
             HttpClient client = new HttpClient();
-            client.DefaultRequestHeaders.Add("Authorization", Twitch.Config.OAuthToken);
+            client.DefaultRequestHeaders.Add("Authorization", $"Bearer {Twitch.Config.OAuthToken}");
             client.DefaultRequestHeaders.Add("Client-Id", Twitch.Config.ClientID);
 
             using (var response = await client.GetAsync(URL))
@@ -36,7 +36,7 @@ namespace Twitch.Helpers
         public async static Task<object?> Post(string URL, object content)
         {
             HttpClient client = new HttpClient();
-            client.DefaultRequestHeaders.Add("Authorization", Twitch.Config.OAuthToken);
+            client.DefaultRequestHeaders.Add("Authorization", $"Bearer {Twitch.Config.OAuthToken}");
             client.DefaultRequestHeaders.Add("Client-Id", Twitch.Config.ClientID);
 
             StringContent Content;

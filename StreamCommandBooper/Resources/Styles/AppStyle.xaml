@@ -29,7 +29,7 @@
     </Style>
 
 
-    <Style TargetType="TextBlock">
+    <Style TargetType="TextBlock" x:Key="Direct">
         <Setter Property="Foreground" Value="{StaticResource Foreground}"/>
     </Style>
 
