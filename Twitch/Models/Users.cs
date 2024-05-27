@@ -23,16 +23,49 @@ namespace Twitch.Models
             /// </summary>
             public class Channel
             {
+                /// <summary>
+                /// An ID that identifies the user.
+                /// </summary>
                 public string ID { get; set; } = string.Empty;
+                /// <summary>
+                /// The user’s login name.
+                /// </summary>
                 public string Login { get; set; } = string.Empty;
+                /// <summary>
+                /// The user’s display name
+                /// </summary>
                 public string Display_Name { get; set; } = string.Empty;
+                /// <summary>
+                /// The type of user. Possible values are: admin — Twitch administrator, global_mod, staff — Twitch staff, "" — Normal user
+                /// </summary>
                 public string Type { get; set; } = string.Empty;
+                /// <summary>
+                /// The type of broadcaster. Possible values are: affiliate — An affiliate broadcaster affiliate broadcaster, partner — A partner broadcaster partner broadcaster, "" — A normal broadcaster
+                /// </summary>
                 public string Broadcaster_Type { get; set; } = string.Empty;
+                /// <summary>
+                /// The user’s description of their channel
+                /// </summary>
                 public string Description { get; set; } = string.Empty;
+                /// <summary>
+                /// A URL to the user’s profile image.
+                /// </summary>
                 public string Profile_Image_URL { get; set; } = string.Empty;
+                /// <summary>
+                /// A URL to the user’s offline image.
+                /// </summary>
                 public string Offline_Image_URL { get; set; } = string.Empty;
+                /// <summary>
+                /// (deprecated) The number of times the user’s channel has been viewed.
+                /// </summary>
                 public Int32 View_Count { get; set; } = 0;
+                /// <summary>
+                /// The user’s verified email address. The object includes this field only if the user access token includes the user:read:email scope
+                /// </summary>
                 public string Email { get; set; } = string.Empty;
+                /// <summary>
+                /// The UTC date and time that the user’s account was created. The timestamp is in RFC3339 format
+                /// </summary>
                 public string Created_At { get; set; } = string.Empty;
             }
         }
@@ -55,8 +88,17 @@ namespace Twitch.Models
             /// </summary>
             public class User_Moderation_Channels_Data
             {
+                /// <summary>
+                /// The Channel ID
+                /// </summary>
                 public string Broadcaster_ID { get; set; } = string.Empty;
+                /// <summary>
+                /// The Channel Username
+                /// </summary>
                 public string Broadcaster_Login { get; set; } = string.Empty;
+                /// <summary>
+                /// The Channel Display Name
+                /// </summary>
                 public string Broadcaster_Name { get; set; } = string.Empty;
             }
             /// <summary>
@@ -69,7 +111,38 @@ namespace Twitch.Models
         }
         #endregion
 
+        /// <summary>
+        /// A Timeout request
+        /// </summary>
+        public class Timeout_User_Request
+        {
+            /// <summary>
+            /// A list of users to Timeout
+            /// </summary>
+            public Timeout_User_Request_Data data { get; set; } = new();
+            /// <summary>
+            /// The user to Timeout
+            /// </summary>
+            public class Timeout_User_Request_Data
+            {
+                /// <summary>
+                /// The UserID to Timeout
+                /// </summary>
+                public string user_id { get; set; } = string.Empty;
+                /// <summary>
+                /// The reason for the Timeout
+                /// </summary>
+                public string reason { get; set; } = string.Empty;
+                /// <summary>
+                /// The timeout duration in seconds
+                /// </summary>
+                public Int32 duration { get; set; } = 60;
+            }
+        }
 
+        /// <summary>
+        /// A Ban Request
+        /// </summary>
         public class Ban_User_Request
         {
             /// <summary>
@@ -100,6 +173,9 @@ namespace Twitch.Models
             /// A list that contains the user you successfully banned or put in a timeout.
             /// </summary>
             public List<Bans> Data { get; set; } = new();
+            /// <summary>
+            /// The response to a ban request
+            /// </summary>
             public class Bans
             {
                 /// <summary>

@@ -23,7 +23,9 @@ namespace Twitch
         /// The config file location
         /// </summary>
         private static string configFile = $"{appDataFolder}\\TwitchConfig.cfg";
-
+        /// <summary>
+        /// The Twitch Authentication Scope
+        /// </summary>
         static string authScopes = "channel:bot+user:write:chat+chat:edit+chat:read+moderator:manage:banned_users+moderation:read+moderator:manage:blocked_terms+user:read:moderated_channels+channel:moderate+user:read:moderated_channels";
         /// <summary>
         /// The Twitch Client ID
@@ -41,8 +43,6 @@ namespace Twitch
         /// OAuth Token
         /// </summary>
         public static string OAuthToken { get; set; } = string.Empty;
-
-
         /// <summary>
         /// The Twitch Client ID
         /// </summary>
@@ -60,7 +60,9 @@ namespace Twitch
         /// </summary>
         public string oAuthToken { get { return OAuthToken; } set { OAuthToken = value; } }
 
-
+        /// <summary>
+        /// Get the OAuth Token - Add a way to auto import the Token if posible
+        /// </summary>
         public static void GetOAuthToken()
         {
             getToken();
@@ -87,6 +89,9 @@ namespace Twitch
 
         }
 
+        /// <summary>
+        /// Listen for the token
+        /// </summary>
         static void ListenForAccessToken()
         {
             Helpers.httpServer.runServer("http://localhost", "54856");

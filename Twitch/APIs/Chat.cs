@@ -8,10 +8,22 @@ namespace Twitch.APIs
 {
     public class Chat
     {
+        /// <summary>
+        /// The Chat Message to send
+        /// </summary>
         protected struct ChatMessage
         {
+            /// <summary>
+            /// The Channel ID, not username
+            /// </summary>
             public string broadcaster_id { get; set; }
+            /// <summary>
+            /// The Sender ID, not username
+            /// </summary>
             public string sender_id { get; set; }
+            /// <summary>
+            /// The message to send
+            /// </summary>
             public string message { get; set; }
 
         }

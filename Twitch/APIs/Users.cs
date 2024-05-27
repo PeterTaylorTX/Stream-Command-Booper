@@ -117,9 +117,17 @@ namespace Twitch.APIs
             authHeaders.Add("Authorization", $"Bearer {Twitch.Config.OAuthToken}");
             authHeaders.Add("Client-Id", Twitch.Config.ClientID);
             string URL = $"https://api.twitch.tv/helix/moderation/bans?broadcaster_id={ChannelID}&moderator_id={Config.ChannelID}";
-            string BanRequest = $"{{\"data\": {{\"user_id\":\"{UserID}\",\"duration\":{Duration},\"reason\":\"{Reason}\"}}}}";
+            var TimeoutRequest = new Models.Users.Timeout_User_Request()
+            {
+                data = new()
+                {
+                    user_id = UserID,
+                    reason = Reason,
+                    duration = Duration
+                }
+            };
 
-            string? result = (string?)await Twitch.Helpers.httpRequests.Post(URL, authHeaders, BanRequest);
+            string? result = (string?)await Twitch.Helpers.httpRequests.Post(URL, authHeaders, TimeoutRequest);
             if (result == null) { return new(); }
 
             Models.Users.Ban_User_Response? response = Newtonsoft.Json.JsonConvert.DeserializeObject<Models.Users.Ban_User_Response>(result);

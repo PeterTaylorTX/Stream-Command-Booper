@@ -8,6 +8,10 @@ namespace Twitch.Helpers
 {
     public class httpRequests
     {
+        /// <summary>
+        /// A http Get request
+        /// </summary>
+        /// <param name="URL">The API RURL</param>
         public async static Task<object?> Get(string URL, Dictionary<string, string> headers)
         {
             HttpClient client = new HttpClient();
@@ -25,6 +29,12 @@ namespace Twitch.Helpers
             }
         }
 
+        /// <summary>
+        /// A http Post request
+        /// </summary>
+        /// <param name="URL">The API URL</param>
+        /// <param name="content">The content to send to the API</param>
+        /// <returns></returns>
         public async static Task<object?> Post(string URL, Dictionary<string, string> headers, object content)
         {
             HttpClient client = new HttpClient();

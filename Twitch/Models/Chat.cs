@@ -13,10 +13,19 @@ namespace Twitch.Models
 {
     public class Chat
     {
+        /// <summary>
+        /// A Chat Message Response
+        /// </summary>
         public class Chat_Messages
         {
+            /// <summary>
+            /// A list of Chat Message Responses
+            /// </summary>
             public Chat_Message[]? Data { get; set; }
 
+            /// <summary>
+            /// The Chat Message
+            /// </summary>
             public class Chat_Message
             {
 

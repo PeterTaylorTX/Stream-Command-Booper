@@ -35,9 +35,18 @@ namespace StreamCommandBooper.Windows
 
         }
         #endregion
+        /// <summary>
+        /// The Twitch Configuration
+        /// </summary>
         public Twitch.Config TwitchConfig { get; set; } = new();
+        /// <summary>
+        /// The visability of the OAuth text entry
+        /// </summary>
         public Visibility ShowOAuthEntry { get { return _ShowOAuthEntry; } set { _ShowOAuthEntry = value; OnPropertyChanged(nameof(ShowOAuthEntry)); } }
         Visibility _ShowOAuthEntry = Visibility.Collapsed;
+        /// <summary>
+        /// The visability of the Show OAuth button
+        /// </summary>
         public Visibility ShowOAuthEntryButton { get { return _ShowOAuthEntryButton; } set { _ShowOAuthEntryButton = value; OnPropertyChanged(nameof(ShowOAuthEntryButton)); } }
         Visibility _ShowOAuthEntryButton = Visibility.Visible;
         public Authentication()
