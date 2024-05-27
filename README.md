@@ -8,7 +8,7 @@
 <p>A ban command will look like "/ban username reason"</p>
 <p>Press Start</p>
 
-![Main UI](https://github.com/PeterTaylorTX/Stream-Command-Booper/assets/16178511/83d511ab-159c-412b-b5a2-7d940f591420)
+![Main UI](https://github.com/PeterTaylorTX/Stream-Command-Booper/assets/16178511/e9231d77-e4b8-4720-9ea5-365d79e88308)
 
 <h1>Authentication</h1>
 <p>Type in your Twitch username, press New Token</p>
