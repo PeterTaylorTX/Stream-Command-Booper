@@ -9,6 +9,10 @@ namespace StreamCommandBooper
     /// </summary>
     public partial class MainWindow : Window, INotifyPropertyChanged
     {
+        /// <summary>
+        /// The current namespace
+        /// </summary>
+        protected const string Namespace = "StreamCommandBooper.Windows.MainWindow";
         #region Binding Helper
         public event PropertyChangedEventHandler? PropertyChanged;
         protected void OnPropertyChanged(string name)
@@ -56,7 +60,7 @@ namespace StreamCommandBooper
                 this.ConnectToTwitch();
                 await this.GetChannels();
             }
-            catch { }
+            catch (Exception ex) { Helpers.MessageBox2.ShowDialog(ex, $"{Namespace}.Window_Loaded"); }
             this.DataContext = this;
         }
 
@@ -97,11 +101,18 @@ namespace StreamCommandBooper
 
         private async void btnProcessCommands_Clicked(object sender, RoutedEventArgs e)
         {
-            if (string.IsNullOrWhiteSpace(this.CommandLines)) { return; }
-            this.isProcessing = true;
-            this.ConnectToTwitch();
+            try
+            {
+                if (string.IsNullOrWhiteSpace(TwitchConfig.oAuthToken)) { return; }
+                if (string.IsNullOrWhiteSpace(TwitchConfig.channelName)) { return; }
+                if (string.IsNullOrWhiteSpace(TwitchConfig.channelID)) { return; }
+                if (string.IsNullOrWhiteSpace(this.CommandLines)) { return; }
+                this.isProcessing = true;
+                this.ConnectToTwitch();
 
-            await processCommands();
+                await processCommands();
+            }
+            catch (Exception ex) { Helpers.MessageBox2.ShowDialog(ex, $"{Namespace}.btnProcessCommands_Clicked"); }
 
             this.isProcessing = false;
         }
@@ -122,27 +133,31 @@ namespace StreamCommandBooper
             await Twitch.APIs.Chat.SendMessageAsync(Channel.Data[0].ID, $"Started: {DateTime.Now.ToString("HH:mm:ss")}");
             foreach (string line in commandLines)
             {
-                if(this.AbortProcessing) { return; }
-                await Task.Delay(this.Delay);
-                if (this.AbortProcessing) { return; }
-
-                this.Stat_Remaining -= 1;
-                this.Stat_Processed += 1;
-
-                if (line.StartsWith("/ban "))
+                try
                 {
-                    await this.BanUser(Channel.Data[0].ID, line);
-                    continue;
-                }
-                if (line.StartsWith("/add_blocked_term "))
-                {
-                    await this.AddBlockedTerm(Channel.Data[0].ID, line);
-                    continue;
-                }
+                    if (this.AbortProcessing) { return; }
+                    await Task.Delay(this.Delay);
+                    if (this.AbortProcessing) { return; }
+
+                    this.Stat_Remaining -= 1;
+                    this.Stat_Processed += 1;
+
+                    if (line.StartsWith("/ban "))
+                    {
+                        await this.BanUser(Channel.Data[0].ID, line);
+                        continue;
+                    }
+                    if (line.StartsWith("/add_blocked_term "))
+                    {
+                        await this.AddBlockedTerm(Channel.Data[0].ID, line);
+                        continue;
+                    }
 
 
-                await Twitch.APIs.Chat.SendMessageAsync(Channel.Data[0].ID, line);
-                this.CommandLines = this.CommandLines.Replace($"{line}\r\n", string.Empty);
+                    await Twitch.APIs.Chat.SendMessageAsync(Channel.Data[0].ID, line);
+                    this.CommandLines = this.CommandLines.Replace($"{line}\r\n", string.Empty);
+                }
+                catch (Exception ex) { Helpers.MessageBox2.ShowDialog(ex, $"{Namespace}.processCommands.ForLoop"); }
             }
 
             await Twitch.APIs.Chat.SendMessageAsync(Channel.Data[0].ID, $"Completed: {DateTime.Now.ToString("HH:mm:ss")}");
@@ -178,7 +193,7 @@ namespace StreamCommandBooper
         /// <param name="ChannelID"></param>
         /// <param name="line"></param>
         /// <returns></returns>
-        private async Task BanUser( string ChannelID, string line)
+        private async Task BanUser(string ChannelID, string line)
         {
             string[] command = line.Split(" ");
             string viewer = string.Empty;

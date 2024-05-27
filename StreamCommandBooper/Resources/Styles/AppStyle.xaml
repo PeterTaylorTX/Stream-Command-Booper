@@ -24,6 +24,15 @@
         <Setter Property="Foreground" Value="{StaticResource Foreground}"/>
     </Style>
 
+    <Style x:Key="Title" TargetType="Label" >
+        <Setter Property="FontSize" Value="18"/>
+    </Style>
+
+
+    <Style TargetType="TextBlock">
+        <Setter Property="Foreground" Value="{StaticResource Foreground}"/>
+    </Style>
+
     <Style TargetType="Border" x:Key="Group">
         <Setter Property="BorderBrush" Value="{StaticResource Foreground}"/>
         <Setter Property="BorderThickness" Value="1"/>

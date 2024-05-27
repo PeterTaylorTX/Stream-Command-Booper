@@ -162,8 +162,17 @@
   <data name="example_BlockedTerm" xml:space="preserve">
     <value>/add__blocked__term {term}</value>
   </data>
+  <data name="Exception" xml:space="preserve">
+    <value>Exception</value>
+  </data>
+  <data name="Exception_Message" xml:space="preserve">
+    <value>There has been an Exception</value>
+  </data>
   <data name="Inactive" xml:space="preserve">
     <value>Inactive</value>
+  </data>
+  <data name="Location" xml:space="preserve">
+    <value>Location</value>
   </data>
   <data name="Logged_In_As" xml:space="preserve">
     <value>Logged In as</value>
@@ -180,8 +189,14 @@
   <data name="OAuthToken" xml:space="preserve">
     <value>OAuth Token</value>
   </data>
+  <data name="OK" xml:space="preserve">
+    <value>OK</value>
+  </data>
   <data name="Processed" xml:space="preserve">
     <value>Processed</value>
+  </data>
+  <data name="Reason" xml:space="preserve">
+    <value>Reason</value>
   </data>
   <data name="Remaining" xml:space="preserve">
     <value>Remaining</value>

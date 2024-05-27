@@ -20,6 +20,10 @@ namespace StreamCommandBooper.Windows
     /// </summary>
     public partial class Authentication : Window, INotifyPropertyChanged
     {
+        /// <summary>
+        /// The current namespace
+        /// </summary>
+        protected const string Namespace = "StreamCommandBooper.Windows.Authentication";
         #region Binding Helper
         public event PropertyChangedEventHandler? PropertyChanged;
         protected void OnPropertyChanged(string name)
@@ -48,12 +52,16 @@ namespace StreamCommandBooper.Windows
         /// </summary>
         private async void btnSave_Clicked(object sender, RoutedEventArgs e)
         {
-            var userDetails = await Twitch.APIs.Users.GetUsersAsync(null, new List<string>() { Twitch.Config.ChannelName });
-            if(userDetails == null) { return; }
+            try
+            {
+                var userDetails = await Twitch.APIs.Users.GetUsersAsync(null, new List<string>() { Twitch.Config.ChannelName });
+                if (userDetails == null) { return; }
 
-            this.TwitchConfig.channelID = userDetails.Data[0].ID;
-            await Twitch.Config.SaveAsync();
-            this.Close();
+                this.TwitchConfig.channelID = userDetails.Data[0].ID;
+                await Twitch.Config.SaveAsync();
+                this.Close();
+            }
+            catch (Exception ex) { Helpers.MessageBox2.ShowDialog(ex, $"{Namespace}.btnSave_Clicked"); }
         }
 
         /// <summary>
@@ -61,9 +69,13 @@ namespace StreamCommandBooper.Windows
         /// </summary>
         private void btnGetNewOAuthToken_Clicked(object sender, RoutedEventArgs e)
         {
-            Twitch.Config.GetOAuthToken();
-            this.ShowOAuthEntry = Visibility.Visible;
-            this.ShowOAuthEntryButton = Visibility.Collapsed;
+            try
+            {
+                Twitch.Config.GetOAuthToken();
+                this.ShowOAuthEntry = Visibility.Visible;
+                this.ShowOAuthEntryButton = Visibility.Collapsed;
+            }
+            catch (Exception ex) { Helpers.MessageBox2.ShowDialog(ex, $"{Namespace}.btnGetNewOAuthToken_Clicked"); }
         }
 
         /// <summary>
