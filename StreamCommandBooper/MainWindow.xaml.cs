@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.Windows;
 using StreamCommandBooper.Resources.Localisation;
 using Twitch;
+using System.Collections.Generic;
 
 namespace StreamCommandBooper
 {
@@ -33,8 +34,8 @@ namespace StreamCommandBooper
         /// <summary>
         /// The currently selected channel
         /// </summary>
-        public string? CurrentChannel { get { return _CurrentChannel; } set { _CurrentChannel = value; OnPropertyChanged(nameof(CurrentChannel)); } }
-        private string? _CurrentChannel;
+        public Twitch.Models.Users.User_Moderation_Channels.User_Moderation_Channels_Data? CurrentChannel { get { return _CurrentChannel; } set { _CurrentChannel = value; OnPropertyChanged(nameof(CurrentChannel)); } }
+        private Twitch.Models.Users.User_Moderation_Channels.User_Moderation_Channels_Data? _CurrentChannel;
         /// <summary>
         /// The commands to be processed
         /// </summary>
@@ -68,8 +69,8 @@ namespace StreamCommandBooper
         /// <summary>
         /// A list of channels the usr is a moderator for, this list is used to select the channel to process command for
         /// </summary>
-        public List<String> Channels { get { return _Channels; } set { _Channels = value; OnPropertyChanged(nameof(Channels)); } }
-        List<String> _Channels { get; set; } = new();
+        public IEnumerable<Twitch.Models.Users.User_Moderation_Channels.User_Moderation_Channels_Data>? Channels { get { return _Channels; } set { _Channels = value; OnPropertyChanged(nameof(Channels)); } }
+        IEnumerable<Twitch.Models.Users.User_Moderation_Channels.User_Moderation_Channels_Data>? _Channels { get; set; }
         /// <summary>
         /// Abort processing the list if True
         /// </summary>
@@ -89,7 +90,7 @@ namespace StreamCommandBooper
             {
                 await Config.Load();
                 if (string.IsNullOrWhiteSpace(Twitch.Config.ClientID)) { Twitch.Config.ClientID = "0x51241kq9zvluxfa3mgzi43v2b3l0"; } //Set Default Client ID
-                this.CurrentChannel = Twitch.Config.ChannelName;
+                this.CurrentChannel = new Twitch.Models.Users.User_Moderation_Channels.User_Moderation_Channels_Data() { Broadcaster_ID = Config.ChannelID, Broadcaster_Login = Config.ChannelName, Broadcaster_Name = Config.ChannelName };
                 this.ConnectToTwitch();
                 await this.GetChannels();
             }
@@ -106,19 +107,14 @@ namespace StreamCommandBooper
 
             if (Mod.Data.Count > 0)
             {
-                this.Channels.Clear();
+                this.Channels = null;
 
                 var Channels = await Twitch.APIs.Users.GetModerationChannelsAsync(Mod.Data[0].ID);
                 if (Channels.Data == null) { return; }
-
-                this.Channels.Add(Twitch.Config.ChannelName);
-                foreach (var user in Channels.Data.OrderBy(channel => channel.Broadcaster_Login))
-                {
-                    this.Channels.Add(user.Broadcaster_Login);
-                }
-                this.CurrentChannel = this.Channels.FirstOrDefault();
+                Channels.Data.Add(new Twitch.Models.Users.User_Moderation_Channels.User_Moderation_Channels_Data() { Broadcaster_ID = Config.ChannelID, Broadcaster_Login = Config.ChannelName, Broadcaster_Name = Config.ChannelName });
+                this.Channels = Channels.Data.OrderBy(channel => channel.Broadcaster_Login).ToList();
+                this.CurrentChannel = this.Channels.Where(c => c.Broadcaster_ID == Config.ChannelID).First();
             }
-
         }
 
         /// <summary>
@@ -145,7 +141,8 @@ namespace StreamCommandBooper
             try
             {
                 string messageTitle = Strings.Missing_Item;
-                if (string.IsNullOrWhiteSpace(this.CurrentChannel)) { MessageBox2.ShowDialog(messageTitle, messageTitle, Strings.Missing_CurrentChannel); return; }
+                if (this.CurrentChannel == null) { MessageBox2.ShowDialog(messageTitle, messageTitle, Strings.Missing_CurrentChannel); return; }
+                if (string.IsNullOrWhiteSpace(this.CurrentChannel?.Broadcaster_Login)) { MessageBox2.ShowDialog(messageTitle, messageTitle, Strings.Missing_CurrentChannel); return; }
                 if (string.IsNullOrWhiteSpace(TwitchConfig.oAuthToken)) { MessageBox2.ShowDialog(messageTitle, messageTitle, Strings.Missing_OAuthToken); return; }
                 if (string.IsNullOrWhiteSpace(TwitchConfig.channelName)) { MessageBox2.ShowDialog(messageTitle, messageTitle, Strings.Missing_ChannelName); return; }
                 if (string.IsNullOrWhiteSpace(TwitchConfig.channelID)) { MessageBox2.ShowDialog(messageTitle, messageTitle, Strings.Missing_ChannelID); return; }
@@ -165,11 +162,10 @@ namespace StreamCommandBooper
         /// </summary>
         protected async Task processCommands()
         {
-            if (string.IsNullOrWhiteSpace(this.CurrentChannel)) { return; }
+            if (this.CurrentChannel == null) { return; }
             if (string.IsNullOrWhiteSpace(Twitch.Config.ChannelName)) { return; }
             this.AbortProcessing = false;
 
-            var Channel = await Twitch.APIs.Users.GetUsersAsync(null, new List<string> { this.CurrentChannel }); // Get the Channel Account
             var ModID = await Twitch.APIs.Users.GetUsersAsync(null, new List<string> { Twitch.Config.ChannelName }); // Get the Mod Account
 
             string[] commandLines = this.CommandLines.Split(Environment.NewLine);
@@ -179,7 +175,7 @@ namespace StreamCommandBooper
             this.Stat_Processed = 0;
             // Update Statistics
 
-            await Twitch.APIs.Chat.SendMessageAsync(Channel.Data[0].ID, $"Started: {DateTime.Now.ToString("HH:mm:ss")}");
+            await Twitch.APIs.Chat.SendMessageAsync(this.CurrentChannel.Broadcaster_ID, $"Started: {DateTime.Now.ToString("HH:mm:ss")}");
             foreach (string line in commandLines)
             {
                 try
@@ -196,20 +192,20 @@ namespace StreamCommandBooper
                     // BAN A VIEWER
                     if (line.StartsWith("/ban "))
                     {
-                        await this.BanUser(Channel.Data[0].ID, line);
+                        await this.BanUser(this.CurrentChannel.Broadcaster_ID, line);
                         continue;
                     }
                     // BAN A VIEWER
                     // ADD A BLOCKED TERM
                     if (line.StartsWith("/add_blocked_term "))
                     {
-                        await this.AddBlockedTerm(Channel.Data[0].ID, line);
+                        await this.AddBlockedTerm(this.CurrentChannel.Broadcaster_ID, line);
                         continue;
                     }
                     // ADD A BLOCKED TERM
 
                     // SEND A MESSAGE IN CHAT
-                    await Twitch.APIs.Chat.SendMessageAsync(Channel.Data[0].ID, line);
+                    await Twitch.APIs.Chat.SendMessageAsync(this.CurrentChannel.Broadcaster_ID, line);
                     // SEND A MESSAGE IN CHAT
 
                     this.CommandLines = this.CommandLines.Replace($"{line}\r\n", string.Empty); // Remove the processed item from the list
@@ -217,7 +213,7 @@ namespace StreamCommandBooper
                 catch (Exception ex) { Helpers.MessageBox2.ShowDialog(ex, $"{Namespace}.processCommands.ForLoop"); }
             }
 
-            await Twitch.APIs.Chat.SendMessageAsync(Channel.Data[0].ID, $"Completed: {DateTime.Now.ToString("HH:mm:ss")}");
+            await Twitch.APIs.Chat.SendMessageAsync(this.CurrentChannel.Broadcaster_ID, $"Completed: {DateTime.Now.ToString("HH:mm:ss")}");
             this.CommandLines = string.Empty;
         }
 

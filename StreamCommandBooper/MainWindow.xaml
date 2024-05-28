@@ -27,7 +27,7 @@
                         <Label Content="{x:Static strings:UI.Configuration}"/>
                         <StackPanel Orientation="Horizontal">
                             <Label Content="{x:Static strings:UI.Channel}" Width="70"/>
-                            <ComboBox Width="150" ItemsSource="{Binding Channels}" SelectedValue="{Binding CurrentChannel}" IsEnabled="{Binding isProcessing, Converter={StaticResource BoolInverseConverter}}" />
+                            <ComboBox Width="150" ItemsSource="{Binding Channels}" SelectedValue="{Binding CurrentChannel}" DisplayMemberPath="Broadcaster_Login" IsEnabled="{Binding isProcessing, Converter={StaticResource BoolInverseConverter}}" />
                         </StackPanel>
                         <StackPanel Orientation="Horizontal">
                             <Label Content="{x:Static strings:UI.Delay_ms}" Width="70"/>
@@ -73,7 +73,7 @@
 
         <StackPanel Orientation="Horizontal" VerticalAlignment="Bottom" HorizontalAlignment="Right">
             <Label Content="{x:Static strings:UI.Version}"/>
-            <Label Content="v1.2.0"/>
+            <Label Content="v1.2.1"/>
         </StackPanel>
     </Grid>
 </Window>
