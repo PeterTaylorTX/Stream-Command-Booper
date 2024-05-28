@@ -50,7 +50,7 @@ namespace Twitch.APIs
         /// <returns></returns>
         public static async Task<Models.Users.User_Moderation_Channels> GetModerationChannelsAsync(string UserID, Int32 MaxNumberPerPage = 100, Int32 Page = 0)
         {
-            string URL = $"https://api.twitch.tv/helix/moderation/channels?user_id={UserID}&first{MaxNumberPerPage}";
+            string URL = $"https://api.twitch.tv/helix/moderation/channels?user_id={UserID}&first={MaxNumberPerPage}";
             if (Page > 0) { URL += $"&after={Page}"; } // If requesting the results in pages
 
             string? result = (string?)await Twitch.Helpers.httpRequests.Get(URL);
