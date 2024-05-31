@@ -124,7 +124,7 @@
     <value>Authentication Failed, please try again</value>
   </data>
   <data name="Missing_ChannelID" xml:space="preserve">
-    <value>Channle ID is missing, please log in again</value>
+    <value>Channel ID is missing, please log in again</value>
   </data>
   <data name="Missing_ChannelName" xml:space="preserve">
     <value>Channel Name is missing, please log in again</value>

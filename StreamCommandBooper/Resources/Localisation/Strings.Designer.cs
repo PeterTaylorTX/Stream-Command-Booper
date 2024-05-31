@@ -79,7 +79,7 @@ namespace StreamCommandBooper.Resources.Localisation {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Channle ID is missing, please log in again.
+        ///   Looks up a localized string similar to Channel ID is missing, please log in again.
         /// </summary>
         internal static string Missing_ChannelID {
             get {
