@@ -18,7 +18,7 @@
         </StackPanel>
         <StackPanel Orientation="Vertical" HorizontalAlignment="Left" Margin="0,10,0,0">
             <Button     Content="{x:Static strings:UI.ShowOAuthToken}" Click="btnShowOAuthToken_Clicked" Visibility="{Binding ShowOAuthEntryButton}" Width="170"/>
-            <TextBox    Text="{Binding Path=TwitchConfig.oAuthToken, Mode=TwoWay}" Visibility="{Binding ShowOAuthEntry}" Width="400" />
+            <TextBox    Text="{Binding Path=TwitchConfig.OAuthToken, Mode=TwoWay}" Visibility="{Binding ShowOAuthEntry}" Width="400" />
         </StackPanel>
         <Button         Content="{x:Static strings:UI.Save}" Click="btnSave_Clicked" Margin="0,10,0,0"/>
     </StackPanel>

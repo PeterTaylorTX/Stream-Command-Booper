@@ -59,9 +59,10 @@ namespace StreamCommandBooper.Windows
         {
             try
             {
-                var userDetails = await Twitch.APIs.Users.GetUsersAsync(null, new List<string>() { this.TwitchConfig.ModUser.Login });
+                var userDetails = await Twitch.APIs.Users.GetUsersAsync(this.TwitchConfig, null, new List<string>() { this.TwitchConfig.ModUser.Login });
                 if (userDetails == null) { MessageBox2.ShowDialog(Strings.Authentication, Strings.Authentication, Strings.Authentication_Failed); return; }
 
+                this.TwitchConfig.ModUser = userDetails.Data[0];
                 await this.TwitchConfig.SaveAsync();
                 this.Close();
             }

@@ -91,7 +91,7 @@ namespace StreamCommandBooper
                 Twitch.Config? tmpConfig = await Config.Load(); //Load config
                 if (tmpConfig == null) { this.TwitchConfig = new(); } // New config
                 else { this.TwitchConfig = tmpConfig; } // Use loaded config
-                
+
                 if (string.IsNullOrWhiteSpace(this.TwitchConfig.ClientID)) { this.TwitchConfig.ClientID = "0x51241kq9zvluxfa3mgzi43v2b3l0"; } //Set Default Client ID
                 this.CurrentChannel = new Twitch.Models.Users.User_Moderation_Channels.User_Moderation_Channels_Data() { Broadcaster_ID = this.TwitchConfig.ModUser.ID, Broadcaster_Login = this.TwitchConfig.ModUser.Login, Broadcaster_Name = this.TwitchConfig.ModUser.Display_Name };
                 this.ConnectToTwitch();
@@ -121,15 +121,17 @@ namespace StreamCommandBooper
         /// <summary>
         /// Connect to the Twitch servers
         /// </summary>
-        private void ConnectToTwitch()
+        private void ConnectToTwitch(Int32 tries = 0)
         {
+            if (tries >= 3) { return; }
             if (this.CurrentChannel == null) { return; }
-            this.isLoggedIn = (this.TwitchConfig.ModUser != null);
+            this.isLoggedIn = !string.IsNullOrWhiteSpace(this.TwitchConfig.OAuthToken);
 
             if (!this.isLoggedIn)
             { // If connection fails, open the settings page
                 Windows.Authentication AuthWindow = new Windows.Authentication(this.TwitchConfig);
                 this.TwitchConfig = AuthWindow.ShowDialog();
+                this.ConnectToTwitch(tries += 1);
             }
         }
 
@@ -267,10 +269,11 @@ namespace StreamCommandBooper
         /// <summary>
         /// Open the login screen
         /// </summary>
-        private void btnLogIn_Clicked(object sender, RoutedEventArgs e)
+        private async void btnLogIn_Clicked(object sender, RoutedEventArgs e)
         {
             Windows.Authentication auth = new Windows.Authentication(this.TwitchConfig);
-            auth.ShowDialog();
+            this.TwitchConfig = auth.ShowDialog();
+            await this.GetChannels();
         }
 
         /// <summary>

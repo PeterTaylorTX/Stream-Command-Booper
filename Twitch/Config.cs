@@ -77,17 +77,6 @@ namespace Twitch
         void ListenForAccessToken()
         {
             Helpers.httpServer.runServer("http://localhost", "54856");
-            Console.WriteLine("Please enter the Access Token:");
-            OAuthToken = Console.ReadLine();
-
-            if (OAuthToken == null)
-            {
-                Console.WriteLine("Unable to access auth key.");
-                Console.WriteLine("Reason:");
-                Console.WriteLine("Press any key to close.");
-                Console.ReadLine();
-            }
-
         }
 
         /// <summary>
@@ -105,7 +94,6 @@ namespace Twitch
             {
                 var userAccount = await Twitch.APIs.Users.GetUsersAsync(config, new List<string> { config.ChannelID });
                 config.ModUser = userAccount.Data[0];
-                config.config_version = 1;
                 await config.SaveAsync();
             }
 
@@ -119,6 +107,7 @@ namespace Twitch
         {
             if (!System.IO.Directory.Exists(appDataRoot)) { System.IO.Directory.CreateDirectory(appDataRoot); }
             if (!System.IO.Directory.Exists(appDataFolder)) { System.IO.Directory.CreateDirectory(appDataFolder); }
+            this.config_version = 1;
             await System.IO.File.WriteAllTextAsync(configFile, Newtonsoft.Json.JsonConvert.SerializeObject(this));
         }
         /// <summary>
@@ -128,6 +117,7 @@ namespace Twitch
         {
             if (!System.IO.Directory.Exists(appDataRoot)) { System.IO.Directory.CreateDirectory(appDataRoot); }
             if (!System.IO.Directory.Exists(appDataFolder)) { System.IO.Directory.CreateDirectory(appDataFolder); }
+            this.config_version = 1;
             System.IO.File.WriteAllText(configFile, Newtonsoft.Json.JsonConvert.SerializeObject(this));
         }
     }
