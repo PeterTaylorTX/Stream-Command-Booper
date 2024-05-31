@@ -28,10 +28,11 @@ namespace Twitch.APIs
         /// Requires OAuth Scope: user:write:chat
         /// Additionally requires user:bot scope from chatting user, and either channel:bot scope from broadcaster or moderator status.
         /// </summary>
+        /// <param name="config">The Twitch config</param>
         /// <param name="ChannelID">The Channel ID to post the message to</param>
         /// <param name="Message">The message to send</param>
         /// <returns></returns>
-        public static async Task<Models.Chat.Chat_Messages> SendMessageAsync(string ChannelID, string Message)
+        public static async Task<Models.Chat.Chat_Messages> SendMessageAsync(Twitch.Config config, string ChannelID, string Message)
         {
             string URL = $"https://api.twitch.tv/helix/chat/messages";
 
@@ -39,10 +40,10 @@ namespace Twitch.APIs
             {
                 message = Message,
                 broadcaster_id = ChannelID,
-                sender_id = Config.ChannelID
+                sender_id = config.ModUser.ID,
             };
 
-            string? result = (string?)await Twitch.Helpers.httpRequests.Post(URL, message);
+            string? result = (string?)await Twitch.Helpers.httpRequests.Post(URL, message, config);
             if (result == null) { return new(); }
 
             Models.Chat.Chat_Messages? response = Newtonsoft.Json.JsonConvert.DeserializeObject<Models.Chat.Chat_Messages>(result);

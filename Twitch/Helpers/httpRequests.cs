@@ -7,11 +7,11 @@ namespace Twitch.Helpers
         /// A http Get request
         /// </summary>
         /// <param name="URL">The API RURL</param>
-        public async static Task<object?> Get(string URL)
+        public async static Task<object?> Get(string URL, Twitch.Config config)
         {
             HttpClient client = new HttpClient();
-            client.DefaultRequestHeaders.Add("Authorization", $"Bearer {Twitch.Config.OAuthToken}");
-            client.DefaultRequestHeaders.Add("Client-Id", Twitch.Config.ClientID);
+            client.DefaultRequestHeaders.Add("Authorization", $"Bearer {config.OAuthToken}");
+            client.DefaultRequestHeaders.Add("Client-Id", config.ClientID);
 
             using (var response = await client.GetAsync(URL))
             {
@@ -27,11 +27,11 @@ namespace Twitch.Helpers
         /// <param name="URL">The API URL</param>
         /// <param name="content">The content to send to the API</param>
         /// <returns></returns>
-        public async static Task<object?> Post(string URL, object content)
+        public async static Task<object?> Post(string URL, object content, Twitch.Config config)
         {
             HttpClient client = new HttpClient();
-            client.DefaultRequestHeaders.Add("Authorization", $"Bearer {Twitch.Config.OAuthToken}");
-            client.DefaultRequestHeaders.Add("Client-Id", Twitch.Config.ClientID);
+            client.DefaultRequestHeaders.Add("Authorization", $"Bearer {config.OAuthToken}");
+            client.DefaultRequestHeaders.Add("Client-Id", config.ClientID);
 
             StringContent Content;
             if (content.GetType() == typeof(string))

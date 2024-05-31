@@ -88,9 +88,12 @@ namespace StreamCommandBooper
         {
             try
             {
-                await Config.Load();
-                if (string.IsNullOrWhiteSpace(Twitch.Config.ClientID)) { Twitch.Config.ClientID = "0x51241kq9zvluxfa3mgzi43v2b3l0"; } //Set Default Client ID
-                this.CurrentChannel = new Twitch.Models.Users.User_Moderation_Channels.User_Moderation_Channels_Data() { Broadcaster_ID = Config.ChannelID, Broadcaster_Login = Config.ChannelName, Broadcaster_Name = Config.ChannelName };
+                Twitch.Config? tmpConfig = await Config.Load(); //Load config
+                if (tmpConfig == null) { this.TwitchConfig = new(); } // New config
+                else { this.TwitchConfig = tmpConfig; } // Use loaded config
+                
+                if (string.IsNullOrWhiteSpace(this.TwitchConfig.ClientID)) { this.TwitchConfig.ClientID = "0x51241kq9zvluxfa3mgzi43v2b3l0"; } //Set Default Client ID
+                this.CurrentChannel = new Twitch.Models.Users.User_Moderation_Channels.User_Moderation_Channels_Data() { Broadcaster_ID = this.TwitchConfig.ModUser.ID, Broadcaster_Login = this.TwitchConfig.ModUser.Login, Broadcaster_Name = this.TwitchConfig.ModUser.Display_Name };
                 this.ConnectToTwitch();
                 await this.GetChannels();
             }
@@ -103,17 +106,15 @@ namespace StreamCommandBooper
         /// </summary>
         protected async Task GetChannels()
         {
-            var Mod = await Twitch.APIs.Users.GetUsersAsync(null, new List<string> { Twitch.Config.ChannelName });
-
-            if (Mod.Data.Count > 0)
+            if (this.TwitchConfig.ModUser != null && this.TwitchConfig.ModUser != null)
             {
                 this.Channels = null;
 
-                var Channels = await Twitch.APIs.Users.GetModerationChannelsAsync(Mod.Data[0].ID);
+                var Channels = await Twitch.APIs.Users.GetModerationChannelsAsync(this.TwitchConfig, this.TwitchConfig.ModUser.ID);
                 if (Channels.Data == null) { return; }
-                Channels.Data.Add(new Twitch.Models.Users.User_Moderation_Channels.User_Moderation_Channels_Data() { Broadcaster_ID = Config.ChannelID, Broadcaster_Login = Config.ChannelName, Broadcaster_Name = Config.ChannelName });
+                Channels.Data.Add(new Twitch.Models.Users.User_Moderation_Channels.User_Moderation_Channels_Data() { Broadcaster_ID = this.TwitchConfig.ModUser.ID, Broadcaster_Login = this.TwitchConfig.ModUser.Login, Broadcaster_Name = this.TwitchConfig.ModUser.Display_Name });
                 this.Channels = Channels.Data.OrderBy(channel => channel.Broadcaster_Login).ToList();
-                this.CurrentChannel = this.Channels.Where(c => c.Broadcaster_ID == Config.ChannelID).First();
+                this.CurrentChannel = this.Channels.Where(c => c.Broadcaster_ID == this.TwitchConfig.ModUser.ID).First();
             }
         }
 
@@ -123,13 +124,12 @@ namespace StreamCommandBooper
         private void ConnectToTwitch()
         {
             if (this.CurrentChannel == null) { return; }
-            var userDetails = Twitch.APIs.Users.GetUsersAsync(null, new List<string>() { Twitch.Config.ChannelName });
-            this.isLoggedIn = (userDetails != null);
+            this.isLoggedIn = (this.TwitchConfig.ModUser != null);
 
             if (!this.isLoggedIn)
             { // If connection fails, open the settings page
-                Windows.Authentication AuthWindow = new Windows.Authentication();
-                AuthWindow.ShowDialog();
+                Windows.Authentication AuthWindow = new Windows.Authentication(this.TwitchConfig);
+                this.TwitchConfig = AuthWindow.ShowDialog();
             }
         }
 
@@ -143,9 +143,9 @@ namespace StreamCommandBooper
                 string messageTitle = Strings.Missing_Item;
                 if (this.CurrentChannel == null) { MessageBox2.ShowDialog(messageTitle, messageTitle, Strings.Missing_CurrentChannel); return; }
                 if (string.IsNullOrWhiteSpace(this.CurrentChannel?.Broadcaster_Login)) { MessageBox2.ShowDialog(messageTitle, messageTitle, Strings.Missing_CurrentChannel); return; }
-                if (string.IsNullOrWhiteSpace(TwitchConfig.oAuthToken)) { MessageBox2.ShowDialog(messageTitle, messageTitle, Strings.Missing_OAuthToken); return; }
-                if (string.IsNullOrWhiteSpace(TwitchConfig.channelName)) { MessageBox2.ShowDialog(messageTitle, messageTitle, Strings.Missing_ChannelName); return; }
-                if (string.IsNullOrWhiteSpace(TwitchConfig.channelID)) { MessageBox2.ShowDialog(messageTitle, messageTitle, Strings.Missing_ChannelID); return; }
+                if (string.IsNullOrWhiteSpace(TwitchConfig.OAuthToken)) { MessageBox2.ShowDialog(messageTitle, messageTitle, Strings.Missing_OAuthToken); return; }
+                if (this.TwitchConfig.ModUser == null) { MessageBox2.ShowDialog(messageTitle, messageTitle, Strings.Missing_ChannelName); return; }
+                if (string.IsNullOrWhiteSpace(this.TwitchConfig.ModUser.ID)) { MessageBox2.ShowDialog(messageTitle, messageTitle, Strings.Missing_ChannelID); return; }
                 if (string.IsNullOrWhiteSpace(this.CommandLines)) { MessageBox2.ShowDialog(messageTitle, messageTitle, Strings.Missing_CommandLines); return; }
                 this.isProcessing = true;
                 this.ConnectToTwitch();
@@ -163,10 +163,8 @@ namespace StreamCommandBooper
         protected async Task processCommands()
         {
             if (this.CurrentChannel == null) { return; }
-            if (string.IsNullOrWhiteSpace(Twitch.Config.ChannelName)) { return; }
+            if (this.TwitchConfig == null) { return; }
             this.AbortProcessing = false;
-
-            var ModID = await Twitch.APIs.Users.GetUsersAsync(null, new List<string> { Twitch.Config.ChannelName }); // Get the Mod Account
 
             string[] commandLines = this.CommandLines.Split(Environment.NewLine);
 
@@ -175,7 +173,7 @@ namespace StreamCommandBooper
             this.Stat_Processed = 0;
             // Update Statistics
 
-            await Twitch.APIs.Chat.SendMessageAsync(this.CurrentChannel.Broadcaster_ID, $"Started: {DateTime.Now.ToString("HH:mm:ss")}");
+            await Twitch.APIs.Chat.SendMessageAsync(this.TwitchConfig, this.CurrentChannel.Broadcaster_ID, $"Started: {DateTime.Now.ToString("HH:mm:ss")}");
             foreach (string line in commandLines)
             {
                 try
@@ -205,7 +203,7 @@ namespace StreamCommandBooper
                     // ADD A BLOCKED TERM
 
                     // SEND A MESSAGE IN CHAT
-                    await Twitch.APIs.Chat.SendMessageAsync(this.CurrentChannel.Broadcaster_ID, line);
+                    await Twitch.APIs.Chat.SendMessageAsync(this.TwitchConfig, this.CurrentChannel.Broadcaster_ID, line);
                     // SEND A MESSAGE IN CHAT
 
                     this.CommandLines = this.CommandLines.Replace($"{line}\r\n", string.Empty); // Remove the processed item from the list
@@ -213,7 +211,7 @@ namespace StreamCommandBooper
                 catch (Exception ex) { Helpers.MessageBox2.ShowDialog(ex, $"{Namespace}.processCommands.ForLoop"); }
             }
 
-            await Twitch.APIs.Chat.SendMessageAsync(this.CurrentChannel.Broadcaster_ID, $"Completed: {DateTime.Now.ToString("HH:mm:ss")}");
+            await Twitch.APIs.Chat.SendMessageAsync(this.TwitchConfig, this.CurrentChannel.Broadcaster_ID, $"Completed: {DateTime.Now.ToString("HH:mm:ss")}");
             this.CommandLines = string.Empty;
         }
 
@@ -233,7 +231,7 @@ namespace StreamCommandBooper
 
             try
             {
-                await Twitch.APIs.Blocked_Terms.BlockTermAsync(ChannelID, blocked_term);
+                await Twitch.APIs.Blocked_Terms.BlockTermAsync(this.TwitchConfig, ChannelID, blocked_term);
             }
             catch { }
 
@@ -253,13 +251,13 @@ namespace StreamCommandBooper
             string reason = string.Empty;
             if (command.Length >= 2) { viewer = command[1]; } else { return; }
             if (command.Length >= 3) { reason = line.Replace($"/ban {viewer} ", string.Empty); }
-            var UserIDs = await Twitch.APIs.Users.GetUsersAsync(null, new List<string> { viewer });
+            var UserIDs = await Twitch.APIs.Users.GetUsersAsync(this.TwitchConfig, null, new List<string> { viewer });
             if (UserIDs == null || UserIDs.Data == null || UserIDs.Data.Count() == 0) { return; }
             viewer = UserIDs.Data[0].ID;
 
             try
             {
-                await Twitch.APIs.Users.BanUserAsync(ChannelID, UserIDs.Data[0].ID, reason);
+                await Twitch.APIs.Users.BanUserAsync(this.TwitchConfig, ChannelID, UserIDs.Data[0].ID, reason);
             }
             catch { }
 
@@ -271,7 +269,7 @@ namespace StreamCommandBooper
         /// </summary>
         private void btnLogIn_Clicked(object sender, RoutedEventArgs e)
         {
-            Windows.Authentication auth = new Windows.Authentication();
+            Windows.Authentication auth = new Windows.Authentication(this.TwitchConfig);
             auth.ShowDialog();
         }
 

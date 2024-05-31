@@ -21,42 +21,31 @@ namespace Twitch
         /// </summary>
         static string authScopes = "channel:bot+user:write:chat+chat:edit+chat:read+moderator:manage:banned_users+moderation:read+moderator:manage:blocked_terms+user:read:moderated_channels+channel:moderate+user:read:moderated_channels";
         /// <summary>
-        /// The Twitch Client ID
+        /// The version of the config
         /// </summary>
-        public static string ClientID { get; set; } = string.Empty;
-        /// <summary>
-        /// Twitch Channel ID
-        /// </summary>
-        public static string ChannelID { get; set; } = string.Empty;
-        /// <summary>
-        /// Twitch Channel Name
-        /// </summary>
-        public static string ChannelName { get; set; } = string.Empty;
-        /// <summary>
-        /// OAuth Token
-        /// </summary>
-        public static string OAuthToken { get; set; } = string.Empty;
+        public Int32 config_version { get; set; } = 0;
         /// <summary>
         /// The Twitch Client ID
         /// </summary>
-        public string clientID { get { return ClientID; } set { ClientID = value; } }
+        public string ClientID { get; set; } = string.Empty;
         /// <summary>
         /// Twitch Channel ID
         /// </summary>
-        public string channelID { get { return ChannelID; } set { ChannelID = value; } }
+        [Obsolete]
+        public string ChannelID { get; set; } = string.Empty;
         /// <summary>
-        /// Twitch Channel Name
+        /// The current user
         /// </summary>
-        public string channelName { get { return ChannelName; } set { ChannelName = value; } }
+        public Twitch.Models.Users.Channels.Channel ModUser { get; set; } = new();
         /// <summary>
         /// OAuth Token
         /// </summary>
-        public string oAuthToken { get { return OAuthToken; } set { OAuthToken = value; } }
+        public string OAuthToken { get; set; } = string.Empty;
 
         /// <summary>
         /// Get the OAuth Token - Add a way to auto import the Token if posible
         /// </summary>
-        public static void GetOAuthToken()
+        public void GetOAuthToken()
         {
             getToken();
             ListenForAccessToken();
@@ -65,7 +54,7 @@ namespace Twitch
         /// <summary>
         /// Get the auth token
         /// </summary>
-        static void getToken()
+        void getToken()
         {
             try
             {
@@ -85,7 +74,7 @@ namespace Twitch
         /// <summary>
         /// Listen for the token
         /// </summary>
-        static void ListenForAccessToken()
+        void ListenForAccessToken()
         {
             Helpers.httpServer.runServer("http://localhost", "54856");
             Console.WriteLine("Please enter the Access Token:");
@@ -105,64 +94,41 @@ namespace Twitch
         /// Load the config from a file
         /// </summary>
         /// <returns></returns>
-        public static async Task Load()
+        public static async Task<Config?> Load()
         {
-            SaveData? config = null;
-            if (!System.IO.File.Exists(configFile)) { return; }
+            Config? config = null;
+            if (!System.IO.File.Exists(configFile)) { return null; }
             string configData = await System.IO.File.ReadAllTextAsync(configFile);
-            config = Newtonsoft.Json.JsonConvert.DeserializeObject<SaveData>(configData);
-            if (!config.HasValue) { return; }
+            config = Newtonsoft.Json.JsonConvert.DeserializeObject<Config>(configData);
 
-            ClientID = config.Value.clientID;
-            ChannelName = config.Value.channelName;
-            OAuthToken = config.Value.oAuthToken;
-            ChannelID = config.Value.channelID;
+            if (config != null && config.config_version == 0)
+            {
+                var userAccount = await Twitch.APIs.Users.GetUsersAsync(config, new List<string> { config.ChannelID });
+                config.ModUser = userAccount.Data[0];
+                config.config_version = 1;
+                await config.SaveAsync();
+            }
+
+            return config;
         }
 
         /// <summary>
         /// Save the config file
         /// </summary>
-        public static async Task SaveAsync()
+        public async Task SaveAsync()
         {
-            SaveData data = new SaveData() { clientID = ClientID, channelName = ChannelName, oAuthToken = OAuthToken, channelID = ChannelID };
-
             if (!System.IO.Directory.Exists(appDataRoot)) { System.IO.Directory.CreateDirectory(appDataRoot); }
             if (!System.IO.Directory.Exists(appDataFolder)) { System.IO.Directory.CreateDirectory(appDataFolder); }
-            await System.IO.File.WriteAllTextAsync(configFile, Newtonsoft.Json.JsonConvert.SerializeObject(data));
+            await System.IO.File.WriteAllTextAsync(configFile, Newtonsoft.Json.JsonConvert.SerializeObject(this));
         }
         /// <summary>
         /// Save the config file
         /// </summary>
-        public static void Save()
+        public void Save()
         {
-            SaveData data = new SaveData() { clientID = ClientID, channelName = ChannelName, oAuthToken = OAuthToken, channelID = ChannelID };
-
             if (!System.IO.Directory.Exists(appDataRoot)) { System.IO.Directory.CreateDirectory(appDataRoot); }
             if (!System.IO.Directory.Exists(appDataFolder)) { System.IO.Directory.CreateDirectory(appDataFolder); }
-            System.IO.File.WriteAllText(configFile, Newtonsoft.Json.JsonConvert.SerializeObject(data));
-        }
-
-        /// <summary>
-        /// Used for saving/loading the config
-        /// </summary>
-        protected struct SaveData
-        {
-            /// <summary>
-            /// The Twitch Client ID
-            /// </summary>
-            public string clientID;
-            /// <summary>
-            /// Twitch Channel Name
-            /// </summary>
-            public string channelName;
-            /// <summary>
-            /// OAuth Token
-            /// </summary>
-            public string oAuthToken;
-            // <summary>
-            /// Twitch Channel ID
-            /// </summary>
-            public string channelID;
+            System.IO.File.WriteAllText(configFile, Newtonsoft.Json.JsonConvert.SerializeObject(this));
         }
     }
 }

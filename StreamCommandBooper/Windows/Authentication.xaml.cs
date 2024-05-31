@@ -39,12 +39,18 @@ namespace StreamCommandBooper.Windows
         /// </summary>
         public Visibility ShowOAuthEntryButton { get { return _ShowOAuthEntryButton; } set { _ShowOAuthEntryButton = value; OnPropertyChanged(nameof(ShowOAuthEntryButton)); } }
         Visibility _ShowOAuthEntryButton = Visibility.Visible;
-        public Authentication()
+        public Authentication(Twitch.Config config)
         {
             InitializeComponent();
+            this.TwitchConfig = config;
             this.DataContext = this;
         }
 
+        public new Twitch.Config ShowDialog()
+        {
+            base.ShowDialog();
+            return this.TwitchConfig;
+        }
 
         /// <summary>
         /// Save the details
@@ -53,11 +59,10 @@ namespace StreamCommandBooper.Windows
         {
             try
             {
-                var userDetails = await Twitch.APIs.Users.GetUsersAsync(null, new List<string>() { Twitch.Config.ChannelName });
+                var userDetails = await Twitch.APIs.Users.GetUsersAsync(null, new List<string>() { this.TwitchConfig.ModUser.Login });
                 if (userDetails == null) { MessageBox2.ShowDialog(Strings.Authentication, Strings.Authentication, Strings.Authentication_Failed); return; }
 
-                this.TwitchConfig.channelID = userDetails.Data[0].ID;
-                await Twitch.Config.SaveAsync();
+                await this.TwitchConfig.SaveAsync();
                 this.Close();
             }
             catch (Exception ex) { Helpers.MessageBox2.ShowDialog(ex, $"{Namespace}.btnSave_Clicked"); }
@@ -70,7 +75,7 @@ namespace StreamCommandBooper.Windows
         {
             try
             {
-                Twitch.Config.GetOAuthToken();
+                this.TwitchConfig.GetOAuthToken();
                 this.ShowOAuthEntry = Visibility.Visible;
                 this.ShowOAuthEntryButton = Visibility.Collapsed;
             }

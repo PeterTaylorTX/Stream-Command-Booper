@@ -10,7 +10,7 @@
     <StackPanel Orientation="Vertical" HorizontalAlignment="Left" Margin="20">
         <StackPanel Orientation="Horizontal">
             <Label      Content="{x:Static strings:UI.Username}" VerticalAlignment="Bottom" Margin="0,0,10,0"/>
-            <TextBox    Text="{Binding Path=TwitchConfig.channelName, Mode=TwoWay}" Width="300"/>
+            <TextBox    Text="{Binding Path=TwitchConfig.ModUser.Login, Mode=TwoWay}" Width="300"/>
         </StackPanel>
         <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
             <Label      Content="{x:Static strings:UI.OAuthToken}" VerticalAlignment="Bottom" Margin="0,0,10,0"/>
