@@ -42,6 +42,7 @@ namespace Twitch
         /// </summary>
         public string OAuthToken { get; set; } = string.Empty;
 
+        private Process? oAuthProcess;
         /// <summary>
         /// Get the OAuth Token - Add a way to auto import the Token if posible
         /// </summary>
@@ -58,7 +59,7 @@ namespace Twitch
         {
             try
             {
-                Process.Start(new ProcessStartInfo
+                oAuthProcess = Process.Start(new ProcessStartInfo
                 {
                     FileName = $"https://id.twitch.tv/oauth2/authorize?response_type=token&client_id={ClientID}&scope={authScopes}&redirect_uri={System.Web.HttpUtility.UrlEncode("http://localhost:54856")}",
                     UseShellExecute = true
@@ -76,7 +77,7 @@ namespace Twitch
         /// </summary>
         void ListenForAccessToken()
         {
-            Helpers.httpServer.runServer("http://localhost", "54856");
+            this.OAuthToken = Helpers.httpServer.runServer("http://localhost", "54856");
         }
 
         /// <summary>

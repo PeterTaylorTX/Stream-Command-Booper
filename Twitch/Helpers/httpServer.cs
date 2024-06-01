@@ -6,8 +6,11 @@ namespace Twitch.Helpers
 {
     internal class httpServer
     {
-        public static void runServer(string callbackAddress, string port)
+
+        public static string runServer(string callbackAddress, string port)
         {
+            string? accessToken = null;
+
             using var listener = new HttpListener();
             listener.Prefixes.Add($"{callbackAddress}:{port}/");
 
@@ -15,21 +18,39 @@ namespace Twitch.Helpers
 
             Debug.WriteLine($"Listening for response");
 
-            HttpListenerContext context = listener.GetContext();
-            HttpListenerRequest req = context.Request;
+            while (true)
+            {
+                HttpListenerContext context = listener.GetContext();
+                HttpListenerRequest req = context.Request;
 
-            using HttpListenerResponse resp = context.Response;
-            resp.Headers.Set("Content-Type", "text/html"); // Set the content type to HTML
+                using HttpListenerResponse resp = context.Response;
 
-            // Get the HTML content from the htmlResponse() function
-            string data = htmlResponse;
+                if (req.HttpMethod == "POST")
+                {
+                    using var reader = new StreamReader(req.InputStream, req.ContentEncoding);
+                    string requestBody = reader.ReadToEnd();
+                    var parsedParams = System.Web.HttpUtility.ParseQueryString(requestBody);
+                    accessToken = parsedParams["access_token"];
 
-            // Convert the HTML content to bytes
-            byte[] buffer = Encoding.UTF8.GetBytes(data);
-            resp.ContentLength64 = buffer.Length;
+                    // You can now use the accessToken variable as needed
+                    Debug.WriteLine($"Received Access Token: {accessToken}");
+                    break;
+                }
+                else
+                {
+                    // Serve the HTML page for GET requests
+                    resp.Headers.Set("Content-Type", "text/html");
 
-            using Stream ros = resp.OutputStream;
-            ros.Write(buffer, 0, buffer.Length);
+                    string data = htmlResponse;
+                    byte[] buffer = Encoding.UTF8.GetBytes(data);
+                    resp.ContentLength64 = buffer.Length;
+
+                    using Stream ros = resp.OutputStream;
+                    ros.Write(buffer, 0, buffer.Length);
+                }
+            }
+            if (accessToken != null) { return accessToken; }
+            return string.Empty;
         }
 
         protected static string htmlResponse = @"<!DOCTYPE html>
@@ -56,6 +77,14 @@ namespace Twitch.Helpers
 
             // Display the access_token in the 'fragmentDisplay' div
             document.getElementById('fragmentDisplay').textContent = ""Access Token: "" + accessToken;
+
+            // Send the access token to the server
+            if (accessToken) {
+                var xhr = new XMLHttpRequest();
+                xhr.open('POST', '/', true);
+                xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+                xhr.send('access_token=' + encodeURIComponent(accessToken));
+            }
         }
 
         // Call the displayAccessToken function when the page loads
@@ -64,5 +93,4 @@ namespace Twitch.Helpers
 </body>
 </html>";
     }
-
 }

@@ -29,16 +29,7 @@ namespace StreamCommandBooper.Windows
         /// The Twitch Configuration
         /// </summary>
         public Twitch.Config TwitchConfig { get; set; } = new();
-        /// <summary>
-        /// The visability of the OAuth text entry
-        /// </summary>
-        public Visibility ShowOAuthEntry { get { return _ShowOAuthEntry; } set { _ShowOAuthEntry = value; OnPropertyChanged(nameof(ShowOAuthEntry)); } }
-        Visibility _ShowOAuthEntry = Visibility.Collapsed;
-        /// <summary>
-        /// The visability of the Show OAuth button
-        /// </summary>
-        public Visibility ShowOAuthEntryButton { get { return _ShowOAuthEntryButton; } set { _ShowOAuthEntryButton = value; OnPropertyChanged(nameof(ShowOAuthEntryButton)); } }
-        Visibility _ShowOAuthEntryButton = Visibility.Visible;
+
         public Authentication(Twitch.Config config)
         {
             InitializeComponent();
@@ -53,12 +44,14 @@ namespace StreamCommandBooper.Windows
         }
 
         /// <summary>
-        /// Save the details
+        /// Get a new OAuth Token
         /// </summary>
-        private async void btnSave_Clicked(object sender, RoutedEventArgs e)
+        private async void btnGetNewOAuthToken_Clicked(object sender, RoutedEventArgs e)
         {
             try
             {
+                this.TwitchConfig.GetOAuthToken();
+
                 var userDetails = await Twitch.APIs.Users.GetUsersAsync(this.TwitchConfig, null, new List<string>() { this.TwitchConfig.ModUser.Login });
                 if (userDetails == null) { MessageBox2.ShowDialog(Strings.Authentication, Strings.Authentication, Strings.Authentication_Failed); return; }
 
@@ -66,30 +59,7 @@ namespace StreamCommandBooper.Windows
                 await this.TwitchConfig.SaveAsync();
                 this.Close();
             }
-            catch (Exception ex) { Helpers.MessageBox2.ShowDialog(ex, $"{Namespace}.btnSave_Clicked"); }
-        }
-
-        /// <summary>
-        /// Get a new OAuth Token
-        /// </summary>
-        private void btnGetNewOAuthToken_Clicked(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                this.TwitchConfig.GetOAuthToken();
-                this.ShowOAuthEntry = Visibility.Visible;
-                this.ShowOAuthEntryButton = Visibility.Collapsed;
-            }
             catch (Exception ex) { Helpers.MessageBox2.ShowDialog(ex, $"{Namespace}.btnGetNewOAuthToken_Clicked"); }
-        }
-
-        /// <summary>
-        /// Make the OAuthToken Visible
-        /// </summary>
-        private void btnShowOAuthToken_Clicked(object sender, RoutedEventArgs e)
-        {
-            this.ShowOAuthEntry = Visibility.Visible;
-            this.ShowOAuthEntryButton = Visibility.Collapsed;
         }
     }
 }
