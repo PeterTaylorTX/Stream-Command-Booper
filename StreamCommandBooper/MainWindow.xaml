@@ -7,7 +7,7 @@
         xmlns:strings="clr-namespace:StreamCommandBooper.Resources.Localisation"
         xmlns:local="clr-namespace:StreamCommandBooper"
         mc:Ignorable="d" Loaded="Window_Loaded"
-        Title="{x:Static strings:UI.AppName}" Height="470" Width="780" MinHeight="470" MinWidth="780" Background="{StaticResource appBackground}">
+        Title="{x:Static strings:UI.AppName}" Height="470" Width="755" MinHeight="470" MinWidth="755" Background="{StaticResource appBackground}">
     <Window.Resources>
         <Converters:BoolInverseConverter x:Key="BoolInverseConverter"/>
     </Window.Resources>
@@ -32,6 +32,10 @@
                         <StackPanel Orientation="Horizontal">
                             <Label Content="{x:Static strings:UI.Delay_ms}" Width="70"/>
                             <TextBox Width="150" Text="{Binding Delay}"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <Label Content="{x:Static strings:UI.ShowStatusInChat}"/>
+                            <CheckBox IsChecked="{Binding ShowStatusInChat}" VerticalAlignment="Center"/>
                         </StackPanel>
                     </StackPanel>
                 </Border>
@@ -58,16 +62,26 @@
                 </Border>
             </StackPanel>
             <StackPanel Orientation="Vertical">
-                <Border Style="{StaticResource Group}">
-                    <StackPanel Orientation="Vertical">
-                        <Label Content="{x:Static strings:UI.Commands_Title}"/>
-                        <TextBox Width="500" Height="300" TextWrapping="NoWrap" AcceptsReturn="True" VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Auto" VerticalContentAlignment="Top" Text="{Binding CommandLines, Mode=TwoWay}"/>
-                        <StackPanel Orientation="Horizontal">
-                            <Button Content="{x:Static strings:UI.Start}" IsEnabled="{Binding isProcessing, Converter={StaticResource BoolInverseConverter}}" Click="btnProcessCommands_Clicked" HorizontalAlignment="Left" />
-                            <Button Content="{x:Static strings:UI.Stop}" IsEnabled="{Binding isProcessing}" Click="btnStopProcessCommands_Clicked" HorizontalAlignment="Left" Margin="10,0,0,0" />
-                        </StackPanel>
+                <StackPanel Orientation="Vertical">
+                    <StackPanel Orientation="Horizontal">
+                        <Border Style="{StaticResource Group}">
+                            <StackPanel Orientation="Vertical">
+                                <Label Content="{x:Static strings:UI.Commands_Title}"/>
+                                <TextBox Width="300" Height="300" TextWrapping="NoWrap" AcceptsReturn="True" VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Auto" VerticalContentAlignment="Top" Text="{Binding CommandLines, Mode=TwoWay}"/>
+                                <StackPanel Orientation="Horizontal">
+                                    <Button Content="{x:Static strings:UI.Start}" IsEnabled="{Binding isProcessing, Converter={StaticResource BoolInverseConverter}}" Click="btnProcessCommands_Clicked" HorizontalAlignment="Left" />
+                                    <Button Content="{x:Static strings:UI.Stop}" IsEnabled="{Binding isProcessing}" Click="btnStopProcessCommands_Clicked" HorizontalAlignment="Left" Margin="10,0,0,0" />
+                                </StackPanel>
+                            </StackPanel>
+                        </Border>
+                        <Border Style="{StaticResource Group}">
+                            <StackPanel Orientation="Vertical">
+                                <Label Content="{x:Static strings:UI.UserDoesNotExist}"/>
+                                <TextBox Width="150" Height="300" TextWrapping="NoWrap" AcceptsReturn="True" VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Auto" VerticalContentAlignment="Top" Text="{Binding UserDoesNotExist, Mode=TwoWay}"/>
+                            </StackPanel>
+                        </Border>
                     </StackPanel>
-                </Border>
+                </StackPanel>
                 <Border Style="{StaticResource Group}">
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
                         <Label Content="{x:Static strings:UI.Examples}"/>

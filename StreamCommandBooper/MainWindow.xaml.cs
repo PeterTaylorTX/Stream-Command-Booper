@@ -31,7 +31,7 @@ namespace StreamCommandBooper
         /// <summary>
         /// The App version number
         /// </summary>
-        public string AppVersion { get { return "1.4.2"; } }
+        public string AppVersion { get { return "1.5.0"; } }
         /// <summary>
         /// The Twitch Client
         /// </summary>
@@ -46,6 +46,11 @@ namespace StreamCommandBooper
         /// </summary>
         public string CommandLines { get { return _CommandLines; } set { _CommandLines = value; OnPropertyChanged(nameof(CommandLines)); } }
         private string _CommandLines = string.Empty;
+        /// <summary>
+        /// The commands of users that did not exist
+        /// </summary>
+        public string UserDoesNotExist { get { return _UserDoseNotExist; } set { _UserDoseNotExist = value; OnPropertyChanged(nameof(UserDoesNotExist)); } }
+        private string _UserDoseNotExist = string.Empty;
         /// <summary>
         /// Is the User logged in
         /// </summary>
@@ -86,6 +91,11 @@ namespace StreamCommandBooper
         /// </summary>
         public IEnumerable<Twitch.Models.Users.User_Moderation_Channels.User_Moderation_Channels_Data>? Channels { get { return _Channels; } set { _Channels = value; OnPropertyChanged(nameof(Channels)); } }
         IEnumerable<Twitch.Models.Users.User_Moderation_Channels.User_Moderation_Channels_Data>? _Channels { get; set; }
+        /// <summary>
+        /// Show the start/stop message in the Twitch Chat
+        /// </summary>
+        public bool ShowStatusInChat { get { return _ShowStatusInChat; } set { _ShowStatusInChat = value; OnPropertyChanged(nameof(ShowStatusInChat)); } }
+        bool _ShowStatusInChat = false;
         /// <summary>
         /// Abort processing the list if True
         /// </summary>
@@ -183,6 +193,7 @@ namespace StreamCommandBooper
             if (this.TwitchConfig == null) { return; }
             this.AbortProcessing = false;
 
+            this.UserDoesNotExist = string.Empty;
             string[] commandLines = this.CommandLines.Split(Environment.NewLine);
 
             // Update Statistics
@@ -192,7 +203,11 @@ namespace StreamCommandBooper
             this.Stat_NewBanned = 0;
             // Update Statistics
 
-            await Twitch.APIs.Chat.SendMessageAsync(this.TwitchConfig, this.CurrentChannel.Broadcaster_ID, $"Started: {DateTime.Now.ToString("HH:mm:ss")}");
+            if (this.ShowStatusInChat)
+            {
+                await Twitch.APIs.Chat.SendMessageAsync(this.TwitchConfig, this.CurrentChannel.Broadcaster_ID, $"Started: {DateTime.Now.ToString("HH:mm:ss")}");
+            }
+
             foreach (string line in commandLines)
             {
                 try
@@ -231,13 +246,15 @@ namespace StreamCommandBooper
                     // SEND A MESSAGE IN CHAT
                     await Twitch.APIs.Chat.SendMessageAsync(this.TwitchConfig, this.CurrentChannel.Broadcaster_ID, line);
                     // SEND A MESSAGE IN CHAT
-
-                    this.CommandLines = this.CommandLines.Replace($"{line}\r\n", string.Empty); // Remove the processed item from the list
                 }
                 catch (Exception ex) { Helpers.MessageBox2.ShowDialog(ex, $"{Namespace}.processCommands.ForLoop"); }
             }
 
-            await Twitch.APIs.Chat.SendMessageAsync(this.TwitchConfig, this.CurrentChannel.Broadcaster_ID, $"Completed: {DateTime.Now.ToString("HH:mm:ss")}");
+            if (this.ShowStatusInChat)
+            {
+                await Twitch.APIs.Chat.SendMessageAsync(this.TwitchConfig, this.CurrentChannel.Broadcaster_ID, $"Completed: {DateTime.Now.ToString("HH:mm:ss")}");
+            }
+
             this.CommandLines = string.Empty;
         }
 
@@ -282,6 +299,7 @@ namespace StreamCommandBooper
             if (UserIDs == null || UserIDs.Data == null || UserIDs.Data.Count() == 0)
             {
                 this.CommandLines = this.CommandLines.Replace($"{line}\r\n", string.Empty);
+                this.UserDoesNotExist += $"{viewer}\r\n";
                 this.Stat_AlreadyBanned += 1;
                 return;
             }

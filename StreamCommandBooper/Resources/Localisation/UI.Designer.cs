@@ -367,6 +367,15 @@ namespace StreamCommandBooper.Resources.Localisation {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Show Start/Stop in Chat.
+        /// </summary>
+        public static string ShowStatusInChat {
+            get {
+                return ResourceManager.GetString("ShowStatusInChat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Start.
         /// </summary>
         public static string Start {
@@ -426,6 +435,15 @@ namespace StreamCommandBooper.Resources.Localisation {
         public static string Title_Settings {
             get {
                 return ResourceManager.GetString("Title_Settings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Users do not exist.
+        /// </summary>
+        public static string UserDoesNotExist {
+            get {
+                return ResourceManager.GetString("UserDoesNotExist", resourceCulture);
             }
         }
         
