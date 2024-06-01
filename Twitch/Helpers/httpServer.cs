@@ -59,10 +59,9 @@ namespace Twitch.Helpers
     <title>Your Access Token</title>
 </head>
 <body>
-    <h1>Your Twitch Access Token</h1>
-    <div>Please paste the access token into the bot request, or the config file</div>
+    <h1>Authenticited</h1>
+    <div>App Authenticated, you can now close this page</div>
     <div/>
-    <div id=""fragmentDisplay""></div>
     <script>
         // Function to get and display the access_token fragment
         function displayAccessToken() {
@@ -74,9 +73,6 @@ namespace Twitch.Helpers
 
             // Get the value of the 'access_token' parameter
             var accessToken = params.get('access_token');
-
-            // Display the access_token in the 'fragmentDisplay' div
-            document.getElementById('fragmentDisplay').textContent = ""Access Token: "" + accessToken;
 
             // Send the access token to the server
             if (accessToken) {
