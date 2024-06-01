@@ -4,6 +4,7 @@ using System.Windows;
 using StreamCommandBooper.Resources.Localisation;
 using Twitch;
 using System.Collections.Generic;
+using System.Reflection;
 
 namespace StreamCommandBooper
 {
@@ -27,6 +28,10 @@ namespace StreamCommandBooper
 
         }
         #endregion
+        /// <summary>
+        /// The App version number
+        /// </summary>
+        public string AppVersion { get { return "1.4.2"; } }
         /// <summary>
         /// The Twitch Client
         /// </summary>
