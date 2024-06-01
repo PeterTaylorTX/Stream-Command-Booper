@@ -250,6 +250,15 @@ namespace StreamCommandBooper.Resources.Localisation {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Run at Max Speed (Experimental).
+        /// </summary>
+        public static string Max_Speed {
+            get {
+                return ResourceManager.GetString("Max_Speed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Name.
         /// </summary>
         public static string Name {

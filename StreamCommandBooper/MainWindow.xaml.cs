@@ -67,6 +67,11 @@ namespace StreamCommandBooper
         public Int32 Stat_Remaining { get { return _Stat_Remaining; } set { _Stat_Remaining = value; OnPropertyChanged(nameof(Stat_Remaining)); } }
         Int32 _Stat_Remaining = 0;
         /// <summary>
+        /// Run the queries at the max speed
+        /// </summary>
+        public bool Max_Speed { get { return _Max_Speed; } set { _Max_Speed = value; OnPropertyChanged(nameof(Max_Speed)); } }
+        bool _Max_Speed = false;
+        /// <summary>
         /// A list of channels the usr is a moderator for, this list is used to select the channel to process command for
         /// </summary>
         public IEnumerable<Twitch.Models.Users.User_Moderation_Channels.User_Moderation_Channels_Data>? Channels { get { return _Channels; } set { _Channels = value; OnPropertyChanged(nameof(Channels)); } }
@@ -282,6 +287,20 @@ namespace StreamCommandBooper
         private void btnStopProcessCommands_Clicked(object sender, RoutedEventArgs e)
         {
             this.AbortProcessing = true;
+        }
+
+        /// <summary>
+        /// Allow the system to run at the max speed
+        /// </summary>
+        private void chkMaxSpeed_Checked(object sender, RoutedEventArgs e)
+        {
+            if (this.Max_Speed)
+            {
+                Int32 ResetPeriod = 50000; // 50 seconds, Twitch resets your count every 60 seconds
+                Int32 NumberOfRequestsPerBan = 2; // Get User + Ban User
+                this.Delay = ResetPeriod / Twitch.Helpers.httpRequests.Ratelimit_Remaining;
+                this.Delay = this.Delay * NumberOfRequestsPerBan;
+            }
         }
     }
 }

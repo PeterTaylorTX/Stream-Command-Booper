@@ -180,6 +180,9 @@
   <data name="Log_In" xml:space="preserve">
     <value>Log In</value>
   </data>
+  <data name="Max_Speed" xml:space="preserve">
+    <value>Run at Max Speed (Experimental)</value>
+  </data>
   <data name="Name" xml:space="preserve">
     <value>Name</value>
   </data>

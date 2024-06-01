@@ -18,7 +18,7 @@
                 <Border Style="{StaticResource Group}">
                     <StackPanel Orientation="Vertical">
                         <Label Content="{x:Static strings:UI.Logged_In_As}"/>
-                        <Label Content="{Binding TwitchConfig.channelName}"/>
+                        <Label Content="{Binding TwitchConfig.ModUser.Display_Name}"/>
                         <Button Content="{x:Static strings:UI.Log_In}" IsEnabled="{Binding isProcessing, Converter={StaticResource BoolInverseConverter}}" Click="btnLogIn_Clicked"/>
                     </StackPanel>
                 </Border>
@@ -34,6 +34,10 @@
                             <TextBox Width="150" Text="{Binding Delay}"/>
                         </StackPanel>
                         <Label Content="{x:Static strings:UI.Delay_Recommended}" />
+                        <StackPanel Orientation="Horizontal">
+                            <Label Content="{x:Static strings:UI.Max_Speed}" />
+                            <CheckBox IsChecked="{Binding Max_Speed}" VerticalAlignment="Center" Checked="chkMaxSpeed_Checked"/>
+                        </StackPanel>
                     </StackPanel>
                 </Border>
                 <Border Style="{StaticResource Group}">
