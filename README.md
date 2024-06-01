@@ -3,17 +3,18 @@
 
 <h1>Main UI</h1>
 
-<p>Enter the target channel on the configuration section on the left, to set the Channek the commands will be run in</p>
+<p>Select the target channel in the configuration section on the left, to set the Channel the commands will be run in</p>
 <p>Paste the Ban commands into the Commands list</p>
 <p>A ban command will look like "/ban username reason"</p>
+<p>A banned term will look like "/add_banned_term term"</p>
 <p>Press Start</p>
 
-![Main UI](https://github.com/PeterTaylorTX/Stream-Command-Booper/assets/16178511/e9231d77-e4b8-4720-9ea5-365d79e88308)
+![Main UI](https://github.com/PeterTaylorTX/Stream-Command-Booper/assets/16178511/b66c9fe1-90f6-46af-84b1-28021215f9d3)
 
 <h1>Authentication</h1>
 <p>Type in your Twitch username, press New Token</p>
 
-![Auth](https://github.com/PeterTaylorTX/Stream-Command-Booper/assets/16178511/62c00b56-23ee-443c-bc16-0f3dc2cc1f31)
+![Auth](https://github.com/PeterTaylorTX/Stream-Command-Booper/assets/16178511/fcd05d9e-fccf-424a-b48c-cf0e9a1cf186)
 
 <p>This will open the Twitch Authorisation screen</p>
 
