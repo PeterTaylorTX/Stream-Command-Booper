@@ -33,31 +33,27 @@
                             <Label Content="{x:Static strings:UI.Delay_ms}" Width="70"/>
                             <TextBox Width="150" Text="{Binding Delay}"/>
                         </StackPanel>
-                        <Label Content="{x:Static strings:UI.Delay_Recommended}" />
-                        <StackPanel Orientation="Horizontal">
-                            <Label Content="{x:Static strings:UI.Max_Speed}" />
-                            <CheckBox IsChecked="{Binding Max_Speed}" VerticalAlignment="Center" Checked="chkMaxSpeed_Checked"/>
-                        </StackPanel>
                     </StackPanel>
                 </Border>
                 <Border Style="{StaticResource Group}">
                     <StackPanel Orientation="Vertical">
                         <Label Content="{x:Static strings:UI.Statistics}"/>
                         <StackPanel Orientation="Horizontal">
-                            <Label Content="{x:Static strings:UI.Processed}" Width="70"/>
-                            <Label Content="{Binding Stat_Processed}" Width="70"/>
+                            <Label Content="{x:Static strings:UI.Processed}" Width="100"/>
+                            <Label Content="{Binding Stat_Processed}" Width="50"/>
                         </StackPanel>
                         <StackPanel Orientation="Horizontal">
-                            <Label Content="{x:Static strings:UI.Remaining}" Width="70"/>
-                            <Label Content="{Binding Stat_Remaining}" Width="70"/>
+                            <Label Content="{x:Static strings:UI.New_Banned}" Width="100"/>
+                            <Label Content="{Binding Stat_NewBanned}" Width="50"/>
                         </StackPanel>
-                    </StackPanel>
-                </Border>
-                <Border Style="{StaticResource Group}">
-                    <StackPanel Orientation="Vertical" HorizontalAlignment="Left">
-                        <Label Content="{x:Static strings:UI.Examples}"/>
-                        <Label Content="{x:Static strings:UI.example_BanUser}"/>
-                        <Label Content="{x:Static strings:UI.example_BlockedTerm}"/>
+                        <StackPanel Orientation="Horizontal">
+                            <Label Content="{x:Static strings:UI.Already_Banned}" Width="100"/>
+                            <Label Content="{Binding Stat_AlreadyBanned}" Width="50"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <Label Content="{x:Static strings:UI.Remaining}" Width="100"/>
+                            <Label Content="{Binding Stat_Remaining}" Width="50"/>
+                        </StackPanel>
                     </StackPanel>
                 </Border>
             </StackPanel>
@@ -67,15 +63,22 @@
                         <Label Content="{x:Static strings:UI.Commands_Title}"/>
                         <TextBox Width="500" Height="300" TextWrapping="NoWrap" AcceptsReturn="True" VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Auto" VerticalContentAlignment="Top" Text="{Binding CommandLines, Mode=TwoWay}"/>
                         <StackPanel Orientation="Horizontal">
-                        <Button Content="{x:Static strings:UI.Start}" IsEnabled="{Binding isProcessing, Converter={StaticResource BoolInverseConverter}}" Click="btnProcessCommands_Clicked" HorizontalAlignment="Left" />
-                        <Button Content="{x:Static strings:UI.Stop}" IsEnabled="{Binding isProcessing}" Click="btnStopProcessCommands_Clicked" HorizontalAlignment="Left" Margin="10,0,0,0" />
+                            <Button Content="{x:Static strings:UI.Start}" IsEnabled="{Binding isProcessing, Converter={StaticResource BoolInverseConverter}}" Click="btnProcessCommands_Clicked" HorizontalAlignment="Left" />
+                            <Button Content="{x:Static strings:UI.Stop}" IsEnabled="{Binding isProcessing}" Click="btnStopProcessCommands_Clicked" HorizontalAlignment="Left" Margin="10,0,0,0" />
                         </StackPanel>
+                    </StackPanel>
+                </Border>
+                <Border Style="{StaticResource Group}">
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
+                        <Label Content="{x:Static strings:UI.Examples}"/>
+                        <Label Content="{x:Static strings:UI.example_BanUser}"/>
+                        <Label Content="{x:Static strings:UI.example_BlockedTerm}"/>
                     </StackPanel>
                 </Border>
             </StackPanel>
         </StackPanel>
 
-        <StackPanel Orientation="Horizontal" VerticalAlignment="Bottom" HorizontalAlignment="Right">
+        <StackPanel Orientation="Horizontal" VerticalAlignment="Bottom" HorizontalAlignment="Left">
             <Label Content="{x:Static strings:UI.Version}"/>
             <Label Content="v1.3.0"/>
         </StackPanel>

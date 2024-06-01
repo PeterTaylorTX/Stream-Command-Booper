@@ -55,7 +55,7 @@ namespace StreamCommandBooper
         /// The delay between commands, too fast and Twitch will surpess the message as spam
         /// </summary>
         public Int32 Delay { get { return _Delay; } set { _Delay = value; OnPropertyChanged(nameof(Delay)); } }
-        Int32 _Delay = 2000;
+        Int32 _Delay = 0;
         /// <summary>
         /// The number of commands processed
         /// </summary>
@@ -67,10 +67,15 @@ namespace StreamCommandBooper
         public Int32 Stat_Remaining { get { return _Stat_Remaining; } set { _Stat_Remaining = value; OnPropertyChanged(nameof(Stat_Remaining)); } }
         Int32 _Stat_Remaining = 0;
         /// <summary>
-        /// Run the queries at the max speed
+        /// The number of bans that were already banned
         /// </summary>
-        public bool Max_Speed { get { return _Max_Speed; } set { _Max_Speed = value; OnPropertyChanged(nameof(Max_Speed)); } }
-        bool _Max_Speed = false;
+        public Int32 Stat_AlreadyBanned { get { return _Stat_AlreadyBanned; } set { _Stat_AlreadyBanned = value; OnPropertyChanged(nameof(Stat_AlreadyBanned)); } }
+        Int32 _Stat_AlreadyBanned = 0;
+        /// <summary>
+        /// The number of bans that were successful 
+        /// </summary>
+        public Int32 Stat_NewBanned { get { return _Stat_NewBanned; } set { _Stat_NewBanned = value; OnPropertyChanged(nameof(Stat_NewBanned)); } }
+        Int32 _Stat_NewBanned = 0;
         /// <summary>
         /// A list of channels the usr is a moderator for, this list is used to select the channel to process command for
         /// </summary>
@@ -178,6 +183,8 @@ namespace StreamCommandBooper
             // Update Statistics
             this.Stat_Remaining = commandLines.Length;
             this.Stat_Processed = 0;
+            this.Stat_AlreadyBanned = 0;
+            this.Stat_NewBanned = 0;
             // Update Statistics
 
             await Twitch.APIs.Chat.SendMessageAsync(this.TwitchConfig, this.CurrentChannel.Broadcaster_ID, $"Started: {DateTime.Now.ToString("HH:mm:ss")}");
@@ -189,15 +196,16 @@ namespace StreamCommandBooper
                     await Task.Delay(this.Delay); // Delay added to stop from spamming the Twitch servers
                     if (this.AbortProcessing) { return; } // Stop processing if true
 
-                    // Update Statistics
-                    this.Stat_Remaining -= 1;
-                    this.Stat_Processed += 1;
-                    // Update Statistics
-
                     // BAN A VIEWER
                     if (line.StartsWith("/ban "))
                     {
                         await this.BanUser(this.CurrentChannel.Broadcaster_ID, line);
+
+                        // Update Statistics
+                        this.Stat_Remaining -= 1;
+                        this.Stat_Processed += 1;
+                        // Update Statistics
+
                         continue;
                     }
                     // BAN A VIEWER
@@ -205,6 +213,12 @@ namespace StreamCommandBooper
                     if (line.StartsWith("/add_blocked_term "))
                     {
                         await this.AddBlockedTerm(this.CurrentChannel.Broadcaster_ID, line);
+
+                        // Update Statistics
+                        this.Stat_Remaining -= 1;
+                        this.Stat_Processed += 1;
+                        // Update Statistics
+
                         continue;
                     }
                     // ADD A BLOCKED TERM
@@ -253,18 +267,31 @@ namespace StreamCommandBooper
         /// <returns></returns>
         private async Task BanUser(string ChannelID, string line)
         {
-            string[] command = line.Split(" ");
+            string newLine = line.Replace("  ", " ");
+            string[] command = newLine.Split(" ");
             string viewer = string.Empty;
             string reason = string.Empty;
             if (command.Length >= 2) { viewer = command[1]; } else { return; }
             if (command.Length >= 3) { reason = line.Replace($"/ban {viewer} ", string.Empty); }
             var UserIDs = await Twitch.APIs.Users.GetUsersAsync(this.TwitchConfig, null, new List<string> { viewer });
-            if (UserIDs == null || UserIDs.Data == null || UserIDs.Data.Count() == 0) { return; }
+            if (UserIDs == null || UserIDs.Data == null || UserIDs.Data.Count() == 0)
+            {
+                this.CommandLines = this.CommandLines.Replace($"{line}\r\n", string.Empty);
+                this.Stat_AlreadyBanned += 1;
+                return;
+            }
             viewer = UserIDs.Data[0].ID;
 
             try
             {
-                await Twitch.APIs.Users.BanUserAsync(this.TwitchConfig, ChannelID, UserIDs.Data[0].ID, reason);
+                Twitch.Models.Users.BannedResponse response = await Twitch.APIs.Users.BanUserAsync(this.TwitchConfig, ChannelID, UserIDs.Data[0].ID, reason);
+                if (response == Twitch.Models.Users.BannedResponse.AlreadyBanned) { this.Stat_AlreadyBanned += 1; }
+                else if (response == Twitch.Models.Users.BannedResponse.Banned) { this.Stat_NewBanned += 1; }
+                else if (response == Twitch.Models.Users.BannedResponse.TooManyRequests)
+                {
+                    this.AbortProcessing = true;
+                    MessageBox2.ShowDialog(Strings.TooManyRequests_Title, Strings.TooManyRequests_Title, Strings.TooManyRequests);
+                }
             }
             catch { }
 
@@ -287,20 +314,6 @@ namespace StreamCommandBooper
         private void btnStopProcessCommands_Clicked(object sender, RoutedEventArgs e)
         {
             this.AbortProcessing = true;
-        }
-
-        /// <summary>
-        /// Allow the system to run at the max speed
-        /// </summary>
-        private void chkMaxSpeed_Checked(object sender, RoutedEventArgs e)
-        {
-            if (this.Max_Speed)
-            {
-                Int32 ResetPeriod = 50000; // 50 seconds, Twitch resets your count every 60 seconds
-                Int32 NumberOfRequestsPerBan = 2; // Get User + Ban User
-                this.Delay = ResetPeriod / Twitch.Helpers.httpRequests.Ratelimit_Remaining;
-                this.Delay = this.Delay * NumberOfRequestsPerBan;
-            }
         }
     }
 }

@@ -59,7 +59,7 @@ namespace Twitch.APIs
             if (result == null) { return new(); }
 
             Models.Users.User_Moderation_Channels? channels = Newtonsoft.Json.JsonConvert.DeserializeObject<Models.Users.User_Moderation_Channels>(result);
-            if(channels == null) { return new(); }
+            if (channels == null) { return new(); }
             return channels;
         }
 
@@ -72,7 +72,7 @@ namespace Twitch.APIs
         /// <param name="UserID">The User ID to ban</param>
         /// <param name="Reason">The reason to Ban the user (optional)</param>
         /// <returns></returns>
-        public static async Task<Models.Users.Ban_User_Response> BanUserAsync(Twitch.Config config, string ChannelID, string UserID, string Reason = "")
+        public static async Task<Models.Users.BannedResponse> BanUserAsync(Twitch.Config config, string ChannelID, string UserID, string Reason = "")
         {
             string URL = $"https://api.twitch.tv/helix/moderation/bans?broadcaster_id={ChannelID}&moderator_id={config.ModUser.ID}";
             var BanRequest = new Models.Users.Ban_User_Request()
@@ -85,11 +85,16 @@ namespace Twitch.APIs
             };
 
             string? result = (string?)await Twitch.Helpers.httpRequests.Post(URL, BanRequest, config);
-            if (result == null) { return new(); }
-
+            if (result == null) { return Models.Users.BannedResponse.NotBanned; }
+            if (result.StartsWith("[ERROR]"))
+            {
+                if (result.Contains("already banned")) { return Models.Users.BannedResponse.AlreadyBanned; }
+                else if(result == "too many requests") { return Models.Users.BannedResponse.TooManyRequests; }
+                else { return Models.Users.BannedResponse.NotBanned; }
+            }
             Models.Users.Ban_User_Response? response = Newtonsoft.Json.JsonConvert.DeserializeObject<Models.Users.Ban_User_Response>(result);
             if (response == null) { return new(); }
-            return response;
+            return Models.Users.BannedResponse.Banned;
         }
 
         /// <summary>
@@ -102,7 +107,7 @@ namespace Twitch.APIs
         /// <param name="Duration">The duration to timeout the user</param>
         /// <param name="Reason">The reason to timeout the user (optional)</param>
         /// <returns></returns>
-        public static async Task<Models.Users.Ban_User_Response> TimeoutUserAsync(Twitch.Config config, string ChannelID, string UserID, Int32 Duration, string Reason = "")
+        public static async Task<Models.Users.BannedResponse> TimeoutUserAsync(Twitch.Config config, string ChannelID, string UserID, Int32 Duration, string Reason = "")
         {
             string URL = $"https://api.twitch.tv/helix/moderation/bans?broadcaster_id={ChannelID}&moderator_id={config.ModUser.ID}";
             var TimeoutRequest = new Models.Users.Timeout_User_Request()
@@ -116,11 +121,15 @@ namespace Twitch.APIs
             };
 
             string? result = (string?)await Twitch.Helpers.httpRequests.Post(URL, TimeoutRequest, config);
-            if (result == null) { return new(); }
-
+            if (result == null) { return Models.Users.BannedResponse.NotBanned; }
+            if (result.StartsWith("[ERROR]"))
+            {
+                if (result.Contains("already banned")) { return Models.Users.BannedResponse.AlreadyBanned; }
+                else { return Models.Users.BannedResponse.NotBanned; }
+            }
             Models.Users.Ban_User_Response? response = Newtonsoft.Json.JsonConvert.DeserializeObject<Models.Users.Ban_User_Response>(result);
             if (response == null) { return new(); }
-            return response;
+            return Models.Users.BannedResponse.Banned;
         }
     }
 }

@@ -196,5 +196,15 @@ namespace Twitch.Models
             }
         }
 
+        /// <summary>
+        /// The Ban status
+        /// </summary>
+        public enum BannedResponse
+        {
+            Banned = 0,
+            AlreadyBanned = 1,
+            NotBanned = 2,
+            TooManyRequests = 3
+        }
     }
 }

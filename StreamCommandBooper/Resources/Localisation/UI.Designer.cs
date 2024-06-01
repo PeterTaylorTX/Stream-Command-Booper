@@ -70,6 +70,15 @@ namespace StreamCommandBooper.Resources.Localisation {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Already Banned.
+        /// </summary>
+        public static string Already_Banned {
+            get {
+                return ResourceManager.GetString("Already_Banned", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Stream Command Booper.
         /// </summary>
         public static string AppName {
@@ -264,6 +273,15 @@ namespace StreamCommandBooper.Resources.Localisation {
         public static string Name {
             get {
                 return ResourceManager.GetString("Name", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to New Banned.
+        /// </summary>
+        public static string New_Banned {
+            get {
+                return ResourceManager.GetString("New_Banned", resourceCulture);
             }
         }
         

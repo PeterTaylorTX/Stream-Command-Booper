@@ -131,5 +131,23 @@ namespace StreamCommandBooper.Resources.Localisation {
                 return ResourceManager.GetString("Missing_OAuthToken", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Too many requests, please wait and try a longer delay.
+        /// </summary>
+        internal static string TooManyRequests {
+            get {
+                return ResourceManager.GetString("TooManyRequests", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Too many requests.
+        /// </summary>
+        internal static string TooManyRequests_Title {
+            get {
+                return ResourceManager.GetString("TooManyRequests_Title", resourceCulture);
+            }
+        }
     }
 }

@@ -120,6 +120,9 @@
   <data name="Active" xml:space="preserve">
     <value>Active</value>
   </data>
+  <data name="Already_Banned" xml:space="preserve">
+    <value>Already Banned</value>
+  </data>
   <data name="AppName" xml:space="preserve">
     <value>Stream Command Booper</value>
   </data>
@@ -188,6 +191,9 @@
   </data>
   <data name="NewOAuthToken" xml:space="preserve">
     <value>New Token</value>
+  </data>
+  <data name="New_Banned" xml:space="preserve">
+    <value>New Banned</value>
   </data>
   <data name="OAuthToken" xml:space="preserve">
     <value>OAuth Token</value>

@@ -26,7 +26,7 @@ namespace Twitch.Helpers
             {
                 if (response.IsSuccessStatusCode) { GetRateLimits(response); return await response.Content.ReadAsStringAsync(); }
                 string error = await response.Content.ReadAsStringAsync();
-                return null;
+                return $"[ERROR]{error}";
             }
         }
 
@@ -58,8 +58,9 @@ namespace Twitch.Helpers
             using (var response = await client.PostAsync(URL, Content))
             {
                 if (response.IsSuccessStatusCode) { GetRateLimits(response); return await response.Content.ReadAsStringAsync(); }
+                if(response.StatusCode == System.Net.HttpStatusCode.TooManyRequests) { return "too many requests"; }
                 string error = await response.Content.ReadAsStringAsync();
-                return null;
+                return $"[ERROR]{error}";
             }
         }
 
