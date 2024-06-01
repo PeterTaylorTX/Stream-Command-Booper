@@ -80,7 +80,7 @@
 
         <StackPanel Orientation="Horizontal" VerticalAlignment="Bottom" HorizontalAlignment="Left">
             <Label Content="{x:Static strings:UI.Version}"/>
-            <Label Content="v1.4.0"/>
+            <Label Content="v1.4.2"/>
         </StackPanel>
     </Grid>
 </Window>
