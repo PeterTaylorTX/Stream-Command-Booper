@@ -135,7 +135,7 @@ namespace StreamCommandBooper
         {
             if (tries >= 3) { return; }
             if (this.CurrentChannel == null) { return; }
-            this.isLoggedIn = !string.IsNullOrWhiteSpace(this.TwitchConfig.OAuthToken);
+            this.isLoggedIn = (TwitchConfig.OAuthToken != null);
 
             if (!this.isLoggedIn)
             { // If connection fails, open the settings page
@@ -155,7 +155,7 @@ namespace StreamCommandBooper
                 string messageTitle = Strings.Missing_Item;
                 if (this.CurrentChannel == null) { MessageBox2.ShowDialog(messageTitle, messageTitle, Strings.Missing_CurrentChannel); return; }
                 if (string.IsNullOrWhiteSpace(this.CurrentChannel?.Broadcaster_Login)) { MessageBox2.ShowDialog(messageTitle, messageTitle, Strings.Missing_CurrentChannel); return; }
-                if (string.IsNullOrWhiteSpace(TwitchConfig.OAuthToken)) { MessageBox2.ShowDialog(messageTitle, messageTitle, Strings.Missing_OAuthToken); return; }
+                if (TwitchConfig.OAuthToken == null) { MessageBox2.ShowDialog(messageTitle, messageTitle, Strings.Missing_OAuthToken); return; }
                 if (this.TwitchConfig.ModUser == null) { MessageBox2.ShowDialog(messageTitle, messageTitle, Strings.Missing_ChannelName); return; }
                 if (string.IsNullOrWhiteSpace(this.TwitchConfig.ModUser.ID)) { MessageBox2.ShowDialog(messageTitle, messageTitle, Strings.Missing_ChannelID); return; }
                 if (string.IsNullOrWhiteSpace(this.CommandLines)) { MessageBox2.ShowDialog(messageTitle, messageTitle, Strings.Missing_CommandLines); return; }

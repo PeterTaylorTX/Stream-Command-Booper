@@ -1,4 +1,6 @@
 ﻿
+using System.Text;
+
 namespace Twitch.Helpers
 {
     public class httpRequests
@@ -18,8 +20,9 @@ namespace Twitch.Helpers
         /// <param name="URL">The API RURL</param>
         public async static Task<object?> Get(string URL, Twitch.Config config)
         {
+            if (config.OAuthToken == null) { return null; }
             HttpClient client = new HttpClient();
-            client.DefaultRequestHeaders.Add("Authorization", $"Bearer {config.OAuthToken}");
+            client.DefaultRequestHeaders.Add("Authorization", $"Bearer {Encoding.Unicode.GetString(config.OAuthToken)}");
             client.DefaultRequestHeaders.Add("Client-Id", config.ClientID);
 
             using (var response = await client.GetAsync(URL))
@@ -38,8 +41,9 @@ namespace Twitch.Helpers
         /// <returns></returns>
         public async static Task<object?> Post(string URL, object content, Twitch.Config config)
         {
+            if (config.OAuthToken == null) { return null; }
             HttpClient client = new HttpClient();
-            client.DefaultRequestHeaders.Add("Authorization", $"Bearer {config.OAuthToken}");
+            client.DefaultRequestHeaders.Add("Authorization", $"Bearer {Encoding.Unicode.GetString(config.OAuthToken)}");
             client.DefaultRequestHeaders.Add("Client-Id", config.ClientID);
 
             StringContent Content;
@@ -58,7 +62,7 @@ namespace Twitch.Helpers
             using (var response = await client.PostAsync(URL, Content))
             {
                 if (response.IsSuccessStatusCode) { GetRateLimits(response); return await response.Content.ReadAsStringAsync(); }
-                if(response.StatusCode == System.Net.HttpStatusCode.TooManyRequests) { return "too many requests"; }
+                if (response.StatusCode == System.Net.HttpStatusCode.TooManyRequests) { return "too many requests"; }
                 string error = await response.Content.ReadAsStringAsync();
                 return $"[ERROR]{error}";
             }

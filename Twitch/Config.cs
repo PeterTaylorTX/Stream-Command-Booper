@@ -1,4 +1,6 @@
 ﻿using System.Diagnostics;
+using System.Runtime.Versioning;
+using System.Text;
 
 namespace Twitch
 {
@@ -15,7 +17,7 @@ namespace Twitch
         /// <summary>
         /// The config file location
         /// </summary>
-        private static string configFile = $"{appDataFolder}\\TwitchConfig.cfg";
+        private static string configFile = $"{appDataFolder}\\BooperConfig.cfg";
         /// <summary>
         /// The Twitch Authentication Scope
         /// </summary>
@@ -40,7 +42,7 @@ namespace Twitch
         /// <summary>
         /// OAuth Token
         /// </summary>
-        public string OAuthToken { get; set; } = string.Empty;
+        public byte[]? OAuthToken { get; set; }
 
         private Process? oAuthProcess;
         /// <summary>
@@ -77,49 +79,39 @@ namespace Twitch
         /// </summary>
         void ListenForAccessToken()
         {
-            this.OAuthToken = Helpers.httpServer.runServer("http://localhost", "54856");
+            this.OAuthToken = Encoding.Unicode.GetBytes(Helpers.httpServer.runServer("http://localhost", "54856"));
         }
 
         /// <summary>
         /// Load the config from a file
         /// </summary>
         /// <returns></returns>
+        [SupportedOSPlatform("windows")]
         public static async Task<Config?> Load()
         {
+            if (System.IO.File.Exists($"{appDataFolder}/TwitchConfig.cfg")) { System.IO.File.Delete($"{appDataFolder}/TwitchConfig.cfg"); } //Remove old Config file
+
             Config? config = null;
             if (!System.IO.File.Exists(configFile)) { return null; }
-            string configData = await System.IO.File.ReadAllTextAsync(configFile);
+            byte[] bytConfigFile = await System.IO.File.ReadAllBytesAsync(configFile);
+            byte[] bytConfigData = System.Security.Cryptography.ProtectedData.Unprotect(bytConfigFile, null, System.Security.Cryptography.DataProtectionScope.CurrentUser);
+            string configData = Encoding.Unicode.GetString(bytConfigData);
             config = Newtonsoft.Json.JsonConvert.DeserializeObject<Config>(configData);
-
-            if (config != null && config.config_version == 0)
-            {
-                var userAccount = await Twitch.APIs.Users.GetUsersAsync(config, new List<string> { config.ChannelID });
-                config.ModUser = userAccount.Data[0];
-                await config.SaveAsync();
-            }
-
             return config;
         }
 
         /// <summary>
         /// Save the config file
         /// </summary>
+        [SupportedOSPlatform("windows")]
         public async Task SaveAsync()
         {
             if (!System.IO.Directory.Exists(appDataRoot)) { System.IO.Directory.CreateDirectory(appDataRoot); }
             if (!System.IO.Directory.Exists(appDataFolder)) { System.IO.Directory.CreateDirectory(appDataFolder); }
             this.config_version = 1;
-            await System.IO.File.WriteAllTextAsync(configFile, Newtonsoft.Json.JsonConvert.SerializeObject(this));
-        }
-        /// <summary>
-        /// Save the config file
-        /// </summary>
-        public void Save()
-        {
-            if (!System.IO.Directory.Exists(appDataRoot)) { System.IO.Directory.CreateDirectory(appDataRoot); }
-            if (!System.IO.Directory.Exists(appDataFolder)) { System.IO.Directory.CreateDirectory(appDataFolder); }
-            this.config_version = 1;
-            System.IO.File.WriteAllText(configFile, Newtonsoft.Json.JsonConvert.SerializeObject(this));
+            string strConfig = Newtonsoft.Json.JsonConvert.SerializeObject(this);
+            byte[] bytConfig = System.Security.Cryptography.ProtectedData.Protect(Encoding.Unicode.GetBytes(strConfig), null, System.Security.Cryptography.DataProtectionScope.CurrentUser);
+            await System.IO.File.WriteAllBytesAsync(configFile, bytConfig);
         }
     }
 }
