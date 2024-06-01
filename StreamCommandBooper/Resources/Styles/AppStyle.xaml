@@ -24,6 +24,11 @@
         <Setter Property="Foreground" Value="{StaticResource Foreground}"/>
     </Style>
 
+    <Style TargetType="Label" x:Key="GroupTitle">
+        <Setter Property="Foreground" Value="{StaticResource Foreground}"/>
+        <Setter Property="FontSize" Value="16"/>
+    </Style>
+
     <Style TargetType="Label" x:Key="Title" >
         <Setter Property="Foreground" Value="{StaticResource Foreground}"/>
         <Setter Property="FontSize" Value="18"/>
