@@ -19,11 +19,8 @@
 
 ![TwitchAuth](https://github.com/PeterTaylorTX/Stream-Command-Booper/assets/16178511/5ca2ca8e-a8f7-4652-9f99-a3eeddcd8f51)
 
-<p>Once you have Authorised the app, copy the Access Token, and paste the Access Token key into the Stream Command Booper OAuth Token section</p>
-<p>DO NOT GIVE OUT OR SHARE YOUR ACCESS TOKEN!!</p>
-
-![Token](https://github.com/PeterTaylorTX/Stream-Command-Booper/assets/16178511/5673d400-e1e9-46af-9361-8f6936947a1d)
-
+<p>Once you have Authorised the app, the screen will auto-close.</p>
+ 
 
 <h1>Installation</h1>
 <p>The program will let you know if you need additional files to run.</p>
