@@ -340,6 +340,15 @@ namespace StreamCommandBooper.Resources.Localisation {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Run for all channels.
+        /// </summary>
+        public static string RunOnAllChannels {
+            get {
+                return ResourceManager.GetString("RunOnAllChannels", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Save.
         /// </summary>
         public static string Save {

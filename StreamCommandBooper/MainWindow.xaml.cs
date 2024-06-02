@@ -31,7 +31,7 @@ namespace StreamCommandBooper
         /// <summary>
         /// The App version number
         /// </summary>
-        public string AppVersion { get { return "1.5.1"; } }
+        public string AppVersion { get { return "1.5.2"; } }
         /// <summary>
         /// The Twitch Client
         /// </summary>
@@ -167,16 +167,6 @@ namespace StreamCommandBooper
         {
             try
             {
-                string messageTitle = Strings.Missing_Item;
-                if (this.CurrentChannel == null) { MessageBox2.ShowDialog(messageTitle, messageTitle, Strings.Missing_CurrentChannel); return; }
-                if (string.IsNullOrWhiteSpace(this.CurrentChannel?.Broadcaster_Login)) { MessageBox2.ShowDialog(messageTitle, messageTitle, Strings.Missing_CurrentChannel); return; }
-                if (TwitchConfig.OAuthToken == null) { MessageBox2.ShowDialog(messageTitle, messageTitle, Strings.Missing_OAuthToken); return; }
-                if (this.TwitchConfig.ModUser == null) { MessageBox2.ShowDialog(messageTitle, messageTitle, Strings.Missing_ChannelName); return; }
-                if (string.IsNullOrWhiteSpace(this.TwitchConfig.ModUser.ID)) { MessageBox2.ShowDialog(messageTitle, messageTitle, Strings.Missing_ChannelID); return; }
-                if (string.IsNullOrWhiteSpace(this.CommandLines)) { MessageBox2.ShowDialog(messageTitle, messageTitle, Strings.Missing_CommandLines); return; }
-                this.isProcessing = true;
-                this.ConnectToTwitch();
-
                 await processCommands();
             }
             catch (Exception ex) { Helpers.MessageBox2.ShowDialog(ex, $"{Namespace}.btnProcessCommands_Clicked"); }
@@ -189,8 +179,17 @@ namespace StreamCommandBooper
         /// </summary>
         protected async Task processCommands()
         {
-            if (this.CurrentChannel == null) { return; }
+            string messageTitle = Strings.Missing_Item;
+            if (this.CurrentChannel == null) { MessageBox2.ShowDialog(messageTitle, messageTitle, Strings.Missing_CurrentChannel); return; }
+            if (string.IsNullOrWhiteSpace(this.CurrentChannel?.Broadcaster_Login)) { MessageBox2.ShowDialog(messageTitle, messageTitle, Strings.Missing_CurrentChannel); return; }
+            if (TwitchConfig.OAuthToken == null) { MessageBox2.ShowDialog(messageTitle, messageTitle, Strings.Missing_OAuthToken); return; }
+            if (this.TwitchConfig.ModUser == null) { MessageBox2.ShowDialog(messageTitle, messageTitle, Strings.Missing_ChannelName); return; }
+            if (string.IsNullOrWhiteSpace(this.TwitchConfig.ModUser.ID)) { MessageBox2.ShowDialog(messageTitle, messageTitle, Strings.Missing_ChannelID); return; }
+            if (string.IsNullOrWhiteSpace(this.CommandLines)) { MessageBox2.ShowDialog(messageTitle, messageTitle, Strings.Missing_CommandLines); return; }
             if (this.TwitchConfig == null) { return; }
+
+            this.isProcessing = true;
+            this.ConnectToTwitch();
             this.AbortProcessing = false;
 
             this.UserDoesNotExist = string.Empty;
@@ -212,6 +211,7 @@ namespace StreamCommandBooper
             {
                 try
                 {
+                    if (string.IsNullOrWhiteSpace(line)) { continue; }
                     if (this.AbortProcessing) { return; } // Stop processing if true
                     await Task.Delay(this.Delay); // Delay added to stop from spamming the Twitch servers
                     if (this.AbortProcessing) { return; } // Stop processing if true
@@ -246,6 +246,8 @@ namespace StreamCommandBooper
                     // SEND A MESSAGE IN CHAT
                     await Twitch.APIs.Chat.SendMessageAsync(this.TwitchConfig, this.CurrentChannel.Broadcaster_ID, line);
                     // SEND A MESSAGE IN CHAT
+
+                    this.CommandLines = this.CommandLines.Replace($"{line}\r\n", string.Empty); // Remove the processed item from the list
                 }
                 catch (Exception ex) { Helpers.MessageBox2.ShowDialog(ex, $"{Namespace}.processCommands.ForLoop"); }
             }
@@ -337,6 +339,29 @@ namespace StreamCommandBooper
         private void btnStopProcessCommands_Clicked(object sender, RoutedEventArgs e)
         {
             this.AbortProcessing = true;
+        }
+
+        /// <summary>
+        /// Run the commands for all channels
+        /// </summary>
+        private async void btnProcessCommandsForAll_Clicked(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                this.AbortProcessing = false;
+                string commandListForAll = this.CommandLines;
+
+                if (this.Channels == null) { return; }
+                foreach (var streamer in this.Channels)
+                {
+                    if (this.AbortProcessing) { break; }
+                    this.CommandLines = commandListForAll;
+                    this.CurrentChannel = streamer;
+                    await this.processCommands();
+                }
+            }
+            catch (Exception ex) { Helpers.MessageBox2.ShowDialog(ex, $"{Namespace}.btnProcessCommandsForAll_Clicked"); }
+            this.isProcessing = false;
         }
     }
 }

@@ -210,6 +210,9 @@
   <data name="Remaining" xml:space="preserve">
     <value>Remaining</value>
   </data>
+  <data name="RunOnAllChannels" xml:space="preserve">
+    <value>Run for all channels</value>
+  </data>
   <data name="Save" xml:space="preserve">
     <value>Save</value>
   </data>

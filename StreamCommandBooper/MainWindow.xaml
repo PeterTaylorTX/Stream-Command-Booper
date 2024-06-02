@@ -7,7 +7,7 @@
         xmlns:strings="clr-namespace:StreamCommandBooper.Resources.Localisation"
         xmlns:local="clr-namespace:StreamCommandBooper"
         mc:Ignorable="d" Loaded="Window_Loaded"
-        Title="{x:Static strings:UI.AppName}" Height="470" Width="755" MinHeight="470" MinWidth="755" Background="{StaticResource appBackground}">
+        Title="{x:Static strings:UI.AppName}" Height="490" Width="760" MinHeight="490" MinWidth="760" Background="{StaticResource appBackground}">
     <Window.Resources>
         <Converters:BoolInverseConverter x:Key="BoolInverseConverter"/>
     </Window.Resources>
@@ -63,24 +63,25 @@
             </StackPanel>
             <StackPanel Orientation="Vertical">
                 <StackPanel Orientation="Vertical">
-                    <StackPanel Orientation="Horizontal">
-                        <Border Style="{StaticResource Group}">
-                            <StackPanel Orientation="Vertical">
-                                <Label Content="{x:Static strings:UI.Commands_Title}" Style="{StaticResource GroupTitle}"/>
-                                <TextBox Width="300" Height="300" TextWrapping="NoWrap" AcceptsReturn="True" VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Auto" VerticalContentAlignment="Top" Text="{Binding CommandLines, Mode=TwoWay}"/>
-                                <StackPanel Orientation="Horizontal">
-                                    <Button Content="{x:Static strings:UI.Start}" IsEnabled="{Binding isProcessing, Converter={StaticResource BoolInverseConverter}}" Click="btnProcessCommands_Clicked" HorizontalAlignment="Left" />
-                                    <Button Content="{x:Static strings:UI.Stop}" IsEnabled="{Binding isProcessing}" Click="btnStopProcessCommands_Clicked" HorizontalAlignment="Left" Margin="10,0,0,0" />
+                    <Border Style="{StaticResource Group}">
+                        <StackPanel Orientation="Vertical">
+                            <StackPanel Orientation="Horizontal">
+                                <StackPanel Orientation="Vertical">
+                                    <Label Content="{x:Static strings:UI.Commands_Title}" Style="{StaticResource GroupTitle}"/>
+                                    <TextBox Width="320" Height="300" TextWrapping="NoWrap" AcceptsReturn="True" VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Auto" VerticalContentAlignment="Top" Text="{Binding CommandLines, Mode=TwoWay}"/>
+                                </StackPanel>
+                                <StackPanel Orientation="Vertical" Margin="10 0 0 0">
+                                    <Label Content="{x:Static strings:UI.UserDoesNotExist}" Style="{StaticResource GroupTitle}"/>
+                                    <TextBox Width="150" Height="300" TextWrapping="NoWrap" AcceptsReturn="True" VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Auto" VerticalContentAlignment="Top" Text="{Binding UserDoesNotExist, Mode=TwoWay}"/>
                                 </StackPanel>
                             </StackPanel>
-                        </Border>
-                        <Border Style="{StaticResource Group}">
-                            <StackPanel Orientation="Vertical">
-                                <Label Content="{x:Static strings:UI.UserDoesNotExist}" Style="{StaticResource GroupTitle}"/>
-                                <TextBox Width="150" Height="300" TextWrapping="NoWrap" AcceptsReturn="True" VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Auto" VerticalContentAlignment="Top" Text="{Binding UserDoesNotExist, Mode=TwoWay}"/>
+                            <StackPanel Orientation="Horizontal" Margin="0 10 0 0">
+                                <Button Content="{x:Static strings:UI.Start}"               Click="btnProcessCommands_Clicked"          HorizontalAlignment="Left"                  IsEnabled="{Binding isProcessing, Converter={StaticResource BoolInverseConverter}}" />
+                                <Button Content="{x:Static strings:UI.Stop}"                Click="btnStopProcessCommands_Clicked"      HorizontalAlignment="Left" Margin="5,0,0,0" IsEnabled="{Binding isProcessing}" />
+                                <Button Content="{x:Static strings:UI.RunOnAllChannels}"    Click="btnProcessCommandsForAll_Clicked"    HorizontalAlignment="Left" Margin="5,0,0,0" IsEnabled="{Binding isProcessing, Converter={StaticResource BoolInverseConverter}}" Width="120"/>
                             </StackPanel>
-                        </Border>
-                    </StackPanel>
+                        </StackPanel>
+                    </Border>
                 </StackPanel>
                 <Border Style="{StaticResource Group}">
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
