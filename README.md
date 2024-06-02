@@ -24,12 +24,22 @@
  
 
 <h1>Installation</h1>
+<p>
+<a href="https://raw.githubusercontent.com/PeterTaylorTX/Stream-Command-Booper/master/published/setup.exe">Download the installer</a> <br/>
+This will auto-update on new releases.
+</p>
+<p>
+Alternatively, you can manually download the no-install version from the <a href="https://github.com/PeterTaylorTX/Stream-Command-Booper/releases">Releases section</a>, and control when you update. <br/>
+We recommend following the project, by clicking on "Watch" at the top, setting the notifications (the little arrow on the right of the watch button) to "custom" and selecting "Releases" to be notified of new updates.
+</p>
+
+<h1>Requirments</h1>
 <p>The program will let you know if you need additional files to run.</p>
 <p>The app uses dotNet8.</p>
-<p>On the first time using the app it requires the following, which the program will check, and then ask to download.</p>
+<p> The first time using the app requires the following, which the program will check, and then ask to download.</p>
 <p>ASPNETCORE-Runtime-8.0.5-win-x64.exe</p>
 <p>WindowsDesktop-Runetime-8.0.5-win-x64.exe</p>
 
 
-<p>The program will ask, if needed, and when you click get, it will open your default browser to an auto-download page. First will be the ASPNETCORE. Find the file in your downloads, and right click, ‘Install as Administrator’. </p>
-<p>Then, re-open the Stream Command Booper program. If you need the second file, the same thing will happen. Find, and open the WindowsDesktop-Runtime file and again, right click ‘Install as Administrator’.</p>
+<p>The program will ask if needed, and when you click get, it will open your default browser to an auto-download page. First will be the ASPNETCORE. Find the file in your downloads, and right-click, ‘Install as Administrator’. </p>
+<p>Then, re-open the Stream Command Booper program. If you need the second file, the same thing will happen. Find, and open the WindowsDesktop-Runtime file and again, right-click ‘Install as Administrator’.</p>
