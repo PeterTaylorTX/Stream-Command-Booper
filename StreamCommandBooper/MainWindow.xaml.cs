@@ -44,7 +44,7 @@ namespace StreamCommandBooper
         /// <summary>
         /// The commands to be processed
         /// </summary>
-        public string CommandLines { get { return _CommandLines; } set { _CommandLines = value; OnPropertyChanged(nameof(CommandLines)); } }
+        public string CommandLines { get { return _CommandLines; } set { _CommandLines = value.TrimEnd(Environment.NewLine.ToCharArray()); OnPropertyChanged(nameof(CommandLines)); } }
         private string _CommandLines = string.Empty;
         /// <summary>
         /// The commands of users that did not exist
@@ -211,7 +211,8 @@ namespace StreamCommandBooper
             {
                 try
                 {
-                    if (string.IsNullOrWhiteSpace(line)) { continue; }
+                    if (string.IsNullOrWhiteSpace(line)) { this.Stat_Remaining -= 1; continue; }
+
                     if (this.AbortProcessing) { return; } // Stop processing if true
                     await Task.Delay(this.Delay); // Delay added to stop from spamming the Twitch servers
                     if (this.AbortProcessing) { return; } // Stop processing if true
@@ -222,11 +223,8 @@ namespace StreamCommandBooper
                         await this.BanUser(this.CurrentChannel.Broadcaster_ID, line);
 
                         // Update Statistics
-                        this.Stat_Remaining -= 1;
                         this.Stat_Processed += 1;
                         // Update Statistics
-
-                        continue;
                     }
                     // BAN A VIEWER
                     // ADD A BLOCKED TERM
@@ -235,17 +233,14 @@ namespace StreamCommandBooper
                         await this.AddBlockedTerm(this.CurrentChannel.Broadcaster_ID, line);
 
                         // Update Statistics
-                        this.Stat_Remaining -= 1;
                         this.Stat_Processed += 1;
                         // Update Statistics
-
-                        continue;
                     }
                     // ADD A BLOCKED TERM
 
-                    // SEND A MESSAGE IN CHAT
-                    await Twitch.APIs.Chat.SendMessageAsync(this.TwitchConfig, this.CurrentChannel.Broadcaster_ID, line);
-                    // SEND A MESSAGE IN CHAT
+                    // Update Statistics
+                    this.Stat_Remaining -= 1;
+                    // Update Statistics
 
                     this.CommandLines = this.CommandLines.Replace($"{line}\r\n", string.Empty); // Remove the processed item from the list
                 }
