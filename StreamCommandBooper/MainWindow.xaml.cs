@@ -365,8 +365,7 @@ namespace StreamCommandBooper
             this.DataContext = null;
 
             if (this.Channels == null) { return; }
-            var channels = this.Channels;
-            foreach (var streamer in channels)
+            foreach (var streamer in this.Channels)
             {
                 streamer.IsSelected = true;
             }

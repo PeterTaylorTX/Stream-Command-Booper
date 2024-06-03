@@ -34,7 +34,7 @@
                         <Label Content="{x:Static strings:UI.Configuration}" Style="{StaticResource GroupTitle}"/>
                         <StackPanel Orientation="Vertical">
                             <Label Content="{x:Static strings:UI.Channels}" Width="70" HorizontalAlignment="Left"/>
-                            <ListBox Width="220" Height="166" ItemsSource="{Binding Channels}" HorizontalAlignment="Left" SelectedValue="{Binding CurrentChannel}" IsEnabled="{Binding isProcessing, Converter={StaticResource BoolInverseConverter}}" SelectionMode="Single">
+                            <ListBox Width="220" Height="166" ItemsSource="{Binding Channels, Mode=TwoWay}" HorizontalAlignment="Left" SelectedValue="{Binding CurrentChannel}" IsEnabled="{Binding isProcessing, Converter={StaticResource BoolInverseConverter}}" SelectionMode="Single">
                                 <ListBox.ItemTemplate>
                                     <DataTemplate>
                                         <StackPanel Orientation="Horizontal">
