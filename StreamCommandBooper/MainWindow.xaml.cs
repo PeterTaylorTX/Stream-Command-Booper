@@ -31,7 +31,7 @@ namespace StreamCommandBooper
         /// <summary>
         /// The App version number
         /// </summary>
-        public string AppVersion { get { return "1.5.3"; } }
+        public string AppVersion { get { return "1.6.0"; } }
         /// <summary>
         /// The Twitch Client
         /// </summary>
@@ -137,7 +137,7 @@ namespace StreamCommandBooper
 
                 var Channels = await Twitch.APIs.Users.GetModerationChannelsAsync(this.TwitchConfig, this.TwitchConfig.ModUser.ID);
                 if (Channels.Data == null) { return; }
-                Channels.Data.Add(new Twitch.Models.Users.User_Moderation_Channels.User_Moderation_Channels_Data() { Broadcaster_ID = this.TwitchConfig.ModUser.ID, Broadcaster_Login = this.TwitchConfig.ModUser.Login, Broadcaster_Name = this.TwitchConfig.ModUser.Display_Name });
+                Channels.Data.Add(new Twitch.Models.Users.User_Moderation_Channels.User_Moderation_Channels_Data() { Broadcaster_ID = this.TwitchConfig.ModUser.ID, Broadcaster_Login = this.TwitchConfig.ModUser.Login, Broadcaster_Name = this.TwitchConfig.ModUser.Display_Name, IsSelected = true });
                 this.Channels = Channels.Data.OrderBy(channel => channel.Broadcaster_Login).ToList();
                 this.CurrentChannel = this.Channels.Where(c => c.Broadcaster_ID == this.TwitchConfig.ModUser.ID).First();
             }
@@ -167,7 +167,27 @@ namespace StreamCommandBooper
         {
             try
             {
-                await processCommands();
+                string messageTitle = Strings.Missing_Item;
+                if (this.CurrentChannel == null) { MessageBox2.ShowDialog(messageTitle, messageTitle, Strings.Missing_CurrentChannel); return; }
+                if (string.IsNullOrWhiteSpace(this.CurrentChannel?.Broadcaster_Login)) { MessageBox2.ShowDialog(messageTitle, messageTitle, Strings.Missing_CurrentChannel); return; }
+                if (TwitchConfig.OAuthToken == null) { MessageBox2.ShowDialog(messageTitle, messageTitle, Strings.Missing_OAuthToken); return; }
+                if (this.TwitchConfig.ModUser == null) { MessageBox2.ShowDialog(messageTitle, messageTitle, Strings.Missing_ChannelName); return; }
+                if (string.IsNullOrWhiteSpace(this.TwitchConfig.ModUser.ID)) { MessageBox2.ShowDialog(messageTitle, messageTitle, Strings.Missing_ChannelID); return; }
+                if (string.IsNullOrWhiteSpace(this.CommandLines)) { MessageBox2.ShowDialog(messageTitle, messageTitle, Strings.Missing_CommandLines); return; }
+                if (this.TwitchConfig == null) { return; }
+
+
+                this.AbortProcessing = false;
+                string commandListForSelected = this.CommandLines;
+
+                if (this.Channels == null) { return; }
+                foreach (var streamer in this.Channels.Where(c => c.IsSelected))
+                {
+                    if (this.AbortProcessing) { break; }
+                    this.CommandLines = commandListForSelected;
+                    this.CurrentChannel = streamer;
+                    await this.processCommands();
+                }
             }
             catch (Exception ex) { Helpers.MessageBox2.ShowDialog(ex, $"{Namespace}.btnProcessCommands_Clicked"); }
 
@@ -336,27 +356,22 @@ namespace StreamCommandBooper
             this.AbortProcessing = true;
         }
 
-        /// <summary>
-        /// Run the commands for all channels
-        /// </summary>
-        private async void btnProcessCommandsForAll_Clicked(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                this.AbortProcessing = false;
-                string commandListForAll = this.CommandLines;
 
-                if (this.Channels == null) { return; }
-                foreach (var streamer in this.Channels)
-                {
-                    if (this.AbortProcessing) { break; }
-                    this.CommandLines = commandListForAll;
-                    this.CurrentChannel = streamer;
-                    await this.processCommands();
-                }
+        /// <summary>
+        /// Select all channels
+        /// </summary>
+        private void btnSelectAll_Clicked(object sender, RoutedEventArgs e)
+        {
+            this.DataContext = null;
+
+            if (this.Channels == null) { return; }
+            var channels = this.Channels;
+            foreach (var streamer in channels)
+            {
+                streamer.IsSelected = true;
             }
-            catch (Exception ex) { Helpers.MessageBox2.ShowDialog(ex, $"{Namespace}.btnProcessCommandsForAll_Clicked"); }
-            this.isProcessing = false;
+
+            this.DataContext = this;
         }
     }
 }

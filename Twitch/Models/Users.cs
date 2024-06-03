@@ -94,6 +94,10 @@ namespace Twitch.Models
                 /// The Channel Display Name
                 /// </summary>
                 public string Broadcaster_Name { get; set; } = string.Empty;
+                /// <summary>
+                /// Is the Channel Selected
+                /// </summary>
+                public bool IsSelected { get; set; } = false;
             }
             /// <summary>
             /// The current page
