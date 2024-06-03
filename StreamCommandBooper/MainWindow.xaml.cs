@@ -31,7 +31,7 @@ namespace StreamCommandBooper
         /// <summary>
         /// The App version number
         /// </summary>
-        public string AppVersion { get { return "1.5.2"; } }
+        public string AppVersion { get { return "1.5.3"; } }
         /// <summary>
         /// The Twitch Client
         /// </summary>
