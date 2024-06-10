@@ -6,8 +6,8 @@
         xmlns:Converters="clr-namespace:StreamCommandBooper.Helpers.Converters"
         xmlns:strings="clr-namespace:StreamCommandBooper.Resources.Localisation"
         xmlns:local="clr-namespace:StreamCommandBooper"
-        mc:Ignorable="d" Loaded="Window_Loaded"
-        Title="{x:Static strings:UI.AppName}" Height="500" Width="775" MinHeight="500" MinWidth="775" Background="{StaticResource appBackground}">
+        mc:Ignorable="d" Loaded="Window_Loaded" Closed="Window_Closed"
+        Title="{x:Static strings:UI.AppName}" Height="520" Width="775" MinHeight="520" MinWidth="775" Background="{StaticResource appBackground}">
     <Window.Resources>
         <Converters:BoolInverseConverter x:Key="BoolInverseConverter"/>
     </Window.Resources>
@@ -55,6 +55,10 @@
                             <Label Content="{x:Static strings:UI.ShowStatusInChat}"/>
                             <CheckBox IsChecked="{Binding ShowStatusInChat}" VerticalAlignment="Center"/>
                         </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <Label Content="{x:Static strings:UI.OnlyProcessBots}"/>
+                            <CheckBox IsChecked="{Binding OnlyProcessBots}" VerticalAlignment="Center"/>
+                        </StackPanel>
                     </StackPanel>
                 </Border>
             </StackPanel>
@@ -95,6 +99,10 @@
                                 <StackPanel Orientation="Horizontal">
                                     <Label Content="{x:Static strings:UI.New_Banned}" Width="100"/>
                                     <Label Content="{Binding Stat_NewBanned}" Width="50"/>
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal">
+                                    <Label Content="{x:Static strings:UI.Skipped}" Width="100"/>
+                                    <Label Content="{Binding Stat_Skipped}" Width="50"/>
                                 </StackPanel>
                                 <StackPanel Orientation="Horizontal">
                                     <Label Content="{x:Static strings:UI.Already_Banned}" Width="100"/>

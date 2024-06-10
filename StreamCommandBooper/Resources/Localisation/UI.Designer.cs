@@ -322,6 +322,15 @@ namespace StreamCommandBooper.Resources.Localisation {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Only process Bots.
+        /// </summary>
+        public static string OnlyProcessBots {
+            get {
+                return ResourceManager.GetString("OnlyProcessBots", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Processed.
         /// </summary>
         public static string Processed {
@@ -408,6 +417,15 @@ namespace StreamCommandBooper.Resources.Localisation {
         public static string ShowStatusInChat {
             get {
                 return ResourceManager.GetString("ShowStatusInChat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Skipped.
+        /// </summary>
+        public static string Skipped {
+            get {
+                return ResourceManager.GetString("Skipped", resourceCulture);
             }
         }
         

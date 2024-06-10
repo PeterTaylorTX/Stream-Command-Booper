@@ -5,6 +5,8 @@ using StreamCommandBooper.Resources.Localisation;
 using Twitch;
 using System.Collections.Generic;
 using System.Reflection;
+using System.Linq;
+using System.Windows.Controls;
 
 namespace StreamCommandBooper
 {
@@ -31,7 +33,16 @@ namespace StreamCommandBooper
         /// <summary>
         /// The App version number
         /// </summary>
-        public string AppVersion { get { return "1.6.0"; } }
+        public string AppVersion
+        {
+            get
+            {
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
+                string version = Assembly.GetEntryAssembly().GetName().Version.ToString();
+                if (version == "1.0.0.0") { return "1.7.0"; } else { return version; }
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
+            }
+        }
         /// <summary>
         /// The Twitch Client
         /// </summary>
@@ -87,6 +98,11 @@ namespace StreamCommandBooper
         public Int32 Stat_NewBanned { get { return _Stat_NewBanned; } set { _Stat_NewBanned = value; OnPropertyChanged(nameof(Stat_NewBanned)); } }
         Int32 _Stat_NewBanned = 0;
         /// <summary>
+        /// Number of accounts skipped (Non-bot accounts when process only bots is active)
+        /// </summary>
+        public Int32 Stat_Skipped { get { return _Stat_Skipped; } set { _Stat_Skipped = value; OnPropertyChanged(nameof(Stat_Skipped)); } }
+        Int32 _Stat_Skipped = 0;
+        /// <summary>
         /// A list of channels the usr is a moderator for, this list is used to select the channel to process command for
         /// </summary>
         public IEnumerable<Twitch.Models.Users.User_Moderation_Channels.User_Moderation_Channels_Data>? Channels { get { return _Channels; } set { _Channels = value; OnPropertyChanged(nameof(Channels)); } }
@@ -96,6 +112,11 @@ namespace StreamCommandBooper
         /// </summary>
         public bool ShowStatusInChat { get { return _ShowStatusInChat; } set { _ShowStatusInChat = value; OnPropertyChanged(nameof(ShowStatusInChat)); } }
         bool _ShowStatusInChat = false;
+        /// <summary>
+        /// Only process accounts with Bot in the reason, do not process users in the list for other reasons
+        /// </summary>
+        public bool OnlyProcessBots { get { return _OnlyProcessBots; } set { _OnlyProcessBots = value; OnPropertyChanged(nameof(OnlyProcessBots)); } }
+        bool _OnlyProcessBots = false;
         /// <summary>
         /// Abort processing the list if True
         /// </summary>
@@ -113,6 +134,7 @@ namespace StreamCommandBooper
         {
             try
             {
+                this.OnlyProcessBots = Properties.Settings.Default.OnlyProcessBots;
                 Twitch.Config? tmpConfig = await Config.Load(); //Load config
                 if (tmpConfig == null) { this.TwitchConfig = new(); } // New config
                 else { this.TwitchConfig = tmpConfig; } // Use loaded config
@@ -220,6 +242,7 @@ namespace StreamCommandBooper
             this.Stat_Processed = 0;
             this.Stat_AlreadyBanned = 0;
             this.Stat_NewBanned = 0;
+            this.Stat_Skipped = 0;
             // Update Statistics
 
             if (this.ShowStatusInChat)
@@ -240,6 +263,7 @@ namespace StreamCommandBooper
                     // BAN A VIEWER
                     if (line.StartsWith("/ban "))
                     {
+                        if (OnlyProcessBots && !line.ToLower().Contains("bot", StringComparison.InvariantCultureIgnoreCase)) { this.Stat_Skipped += 1; continue; } // Skip accounts that are not bots
                         await this.BanUser(this.CurrentChannel.Broadcaster_ID, line);
 
                         // Update Statistics
@@ -371,6 +395,19 @@ namespace StreamCommandBooper
             }
 
             this.DataContext = this;
+        }
+
+        /// <summary>
+        /// Save the settings and close the app
+        /// </summary>
+        private void Window_Closed(object sender, EventArgs e)
+        {
+            try
+            {
+                Properties.Settings.Default.OnlyProcessBots = this.OnlyProcessBots;
+                Properties.Settings.Default.Save();
+            }
+            catch (Exception ex) { Helpers.MessageBox2.ShowDialog(ex, $"{Namespace}.Window_Closed"); }
         }
     }
 }

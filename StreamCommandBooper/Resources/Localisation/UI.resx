@@ -204,6 +204,9 @@
   <data name="OK" xml:space="preserve">
     <value>OK</value>
   </data>
+  <data name="OnlyProcessBots" xml:space="preserve">
+    <value>Only process Bots</value>
+  </data>
   <data name="Processed" xml:space="preserve">
     <value>Processed</value>
   </data>
@@ -233,6 +236,9 @@
   </data>
   <data name="ShowStatusInChat" xml:space="preserve">
     <value>Show Start/Stop in Chat</value>
+  </data>
+  <data name="Skipped" xml:space="preserve">
+    <value>Skipped</value>
   </data>
   <data name="Start" xml:space="preserve">
     <value>Start</value>
