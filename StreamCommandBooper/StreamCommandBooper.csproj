@@ -7,6 +7,12 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <UseWPF>true</UseWPF>
     <ApplicationIcon>Resources\Images\Smudge_56.ico</ApplicationIcon>
+    <AssemblyVersion>1.7.0</AssemblyVersion>
+    <Authors>PeterTaylorTX</Authors>
+    <Title>Stream Command Booper</Title>
+    <Copyright>PeterTaylorTX © 2024</Copyright>
+    <PackageProjectUrl>https://github.com/PeterTaylorTX/Stream-Command-Booper</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/PeterTaylorTX/Stream-Command-Booper</RepositoryUrl>
   </PropertyGroup>
 
   <ItemGroup>

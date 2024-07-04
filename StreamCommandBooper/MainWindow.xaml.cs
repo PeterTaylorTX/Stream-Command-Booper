@@ -37,10 +37,12 @@ namespace StreamCommandBooper
         {
             get
             {
-#pragma warning disable CS8602 // Dereference of a possibly null reference.
-                string version = Assembly.GetEntryAssembly().GetName().Version.ToString();
-                if (version == "1.0.0.0") { return "1.7.0"; } else { return version; }
-#pragma warning restore CS8602 // Dereference of a possibly null reference.
+
+                Version? version = Assembly.GetEntryAssembly()?.GetName().Version;
+                if (version == null) { return string.Empty; } //NO VERSION
+                string strVersion = $"{version.Major}.{version.Minor}.{version.Build}";
+                if(version.Revision != 0) { strVersion += $".{version.Revision}"; }
+                return strVersion;
             }
         }
         /// <summary>
