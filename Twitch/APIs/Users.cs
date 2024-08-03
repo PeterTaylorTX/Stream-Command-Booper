@@ -1,4 +1,6 @@
 ﻿
+using System.Runtime.CompilerServices;
+
 namespace Twitch.APIs
 {
     public class Users
@@ -57,6 +59,11 @@ namespace Twitch.APIs
 
             string? result = (string?)await Twitch.Helpers.httpRequests.Get(URL, config);
             if (result == null) { return new(); }
+
+            if (result.Contains("401")) { throw new Exception("Invalid token, please create new using the login button."); } // Catching 401 invalid token
+
+            if (result.Contains("400")) { throw new Exception("Token expired, please create new using the login button."); } // Catching 400 expired token
+
 
             Models.Users.User_Moderation_Channels? channels = Newtonsoft.Json.JsonConvert.DeserializeObject<Models.Users.User_Moderation_Channels>(result);
             if (channels == null) { return new(); }
