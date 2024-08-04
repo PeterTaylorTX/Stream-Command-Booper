@@ -1,6 +1,4 @@
 ﻿
-using System.Runtime.CompilerServices;
-
 namespace Twitch.APIs
 {
     public class Users
