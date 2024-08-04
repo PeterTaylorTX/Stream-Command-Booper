@@ -52,7 +52,7 @@ namespace Twitch.APIs
         /// <param name="MaxNumberPerPage">The max number of records to return in a single page. Max valus is 100 per page</param>
         /// <param name="Page">The page number</param>
         /// <returns></returns>
-        public static async Task<Models.Users.User_Moderation_Channels> GetModerationChannelsAsync(Twitch.Config config, string UserID, Int32 MaxNumberPerPage = 100, Int32 Page = 0)
+        public static async Task<Models.Users.User_Moderation_Channels> GetModerationChannelsAsync(Twitch.Config config, string UserID, Int32 MaxNumberPerPage = 100, Int32 Page = 0, bool FirstTry = true)
         {
             string URL = $"https://api.twitch.tv/helix/moderation/channels?user_id={UserID}&first={MaxNumberPerPage}";
             if (Page > 0) { URL += $"&after={Page}"; } // If requesting the results in pages
@@ -60,9 +60,19 @@ namespace Twitch.APIs
             string? result = (string?)await Twitch.Helpers.httpRequests.Get(URL, config);
             if (result == null) { return new(); }
 
-            if (result.Contains("401")) { throw new Exception("Invalid token, please create new using the login button."); } // Catching 401 invalid token
-
-            if (result.Contains("400")) { throw new Exception("Token expired, please create new using the login button."); } // Catching 400 expired token
+            if (result.StartsWith("[ERROR]")) // Catching 401 invalid token or 400 Expired token
+            {
+                if (result.Contains("401") || result.Contains("400"))
+                {
+                    if (FirstTry)
+                    {
+                        config.GetOAuthToken();
+                        await config.SaveAsync();
+                        return await GetModerationChannelsAsync(config, UserID, 100, 0, false); 
+                    }
+                }
+            }
+            
 
 
             Models.Users.User_Moderation_Channels? channels = Newtonsoft.Json.JsonConvert.DeserializeObject<Models.Users.User_Moderation_Channels>(result);
