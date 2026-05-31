@@ -273,6 +273,17 @@ namespace StreamCommandBooper
                         // Update Statistics
                     }
                     // BAN A VIEWER
+                    // UNBAN A VIEWER
+                    if (line.StartsWith("/unban "))
+                    {
+                        if (OnlyProcessBots && !line.ToLower().Contains("bot", StringComparison.InvariantCultureIgnoreCase)) { this.Stat_Skipped += 1; continue; } // Skip accounts that are not bots
+                        await this.UnBanUser(this.CurrentChannel.Broadcaster_ID, line);
+
+                        // Update Statistics
+                        this.Stat_Processed += 1;
+                        // Update Statistics
+                    }
+                    // UNBAN A VIEWER
                     // ADD A BLOCKED TERM
                     if (line.StartsWith("/add_blocked_term "))
                     {
@@ -354,6 +365,40 @@ namespace StreamCommandBooper
                 if (response == Twitch.Models.Users.BannedResponse.AlreadyBanned) { this.Stat_AlreadyBanned += 1; }
                 else if (response == Twitch.Models.Users.BannedResponse.Banned) { this.Stat_NewBanned += 1; }
                 else if (response == Twitch.Models.Users.BannedResponse.TooManyRequests)
+                {
+                    this.AbortProcessing = true;
+                    MessageBox2.ShowDialog(Strings.TooManyRequests_Title, Strings.TooManyRequests_Title, Strings.TooManyRequests);
+                }
+            }
+            catch { }
+
+            this.CommandLines = this.CommandLines.Replace($"{line}\r\n", string.Empty);
+        }        /// <summary>
+                 /// Ban the user
+                 /// </summary>
+                 /// <param name="ChannelID">The channel to ban the viewer from</param>
+                 /// <param name="line">The command line to process</param>
+                 /// <returns></returns>
+        private async Task UnBanUser(string ChannelID, string line)
+        {
+            string newLine = line.Replace("  ", " ");
+            string[] command = newLine.Split(" ");
+            string viewer = string.Empty;
+            string reason = string.Empty;
+            if (command.Length >= 2) { viewer = command[1]; } else { return; }
+            var UserIDs = await Twitch.APIs.Users.GetUsersAsync(this.TwitchConfig, null, new List<string> { viewer });
+            if (UserIDs == null || UserIDs.Data == null || UserIDs.Data.Count() == 0)
+            {
+                this.CommandLines = this.CommandLines.Replace($"{line}\r\n", string.Empty);
+                this.UserDoesNotExist += $"{viewer}\r\n";
+                return;
+            }
+            viewer = UserIDs.Data[0].ID;
+
+            try
+            {
+                Twitch.Models.Users.UnBannedResponse response = await Twitch.APIs.Users.UnBanUserAsync(this.TwitchConfig, ChannelID, UserIDs.Data[0].ID);
+                if (response == Twitch.Models.Users.UnBannedResponse.TooManyRequests)
                 {
                     this.AbortProcessing = true;
                     MessageBox2.ShowDialog(Strings.TooManyRequests_Title, Strings.TooManyRequests_Title, Strings.TooManyRequests);

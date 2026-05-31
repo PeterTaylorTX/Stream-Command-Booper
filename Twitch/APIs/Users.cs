@@ -104,12 +104,34 @@ namespace Twitch.APIs
             if (result.StartsWith("[ERROR]"))
             {
                 if (result.Contains("already banned")) { return Models.Users.BannedResponse.AlreadyBanned; }
-                else if(result == "too many requests") { return Models.Users.BannedResponse.TooManyRequests; }
+                else if (result == "too many requests") { return Models.Users.BannedResponse.TooManyRequests; }
                 else { return Models.Users.BannedResponse.NotBanned; }
             }
             Models.Users.Ban_User_Response? response = Newtonsoft.Json.JsonConvert.DeserializeObject<Models.Users.Ban_User_Response>(result);
             if (response == null) { return new(); }
             return Models.Users.BannedResponse.Banned;
+        }
+        /// <summary>
+        /// UnBan a Viewer
+        /// </summary>
+        /// <param name="config">The Twitch config</param>
+        /// <param name="ChannelID">The channel ID to unban the user in</param>
+        /// <param name="UserID">The User ID to unban</param>
+        /// <returns></returns>
+        public static async Task<Models.Users.UnBannedResponse> UnBanUserAsync(Twitch.Config config, string ChannelID, string UserID)
+        {
+            string URL = $"https://api.twitch.tv/helix/moderation/bans?broadcaster_id={ChannelID}&moderator_id={config.ModUser.ID}&user_id={UserID}";
+            string? result = (string?)await Twitch.Helpers.httpRequests.Delete(URL, config);
+            if (result == null) { return Models.Users.UnBannedResponse.AlreadyUnBanned; }
+            if (result.StartsWith("[ERROR]"))
+            {
+                if (result.Contains("already unbanned")) { return Models.Users.UnBannedResponse.AlreadyUnBanned; }
+                else if (result == "too many requests") { return Models.Users.UnBannedResponse.TooManyRequests; }
+                else { return Models.Users.UnBannedResponse.Failed; }
+            }
+            Models.Users.Ban_User_Response? response = Newtonsoft.Json.JsonConvert.DeserializeObject<Models.Users.Ban_User_Response>(result);
+            if (response == null) { return new(); }
+            return Models.Users.UnBannedResponse.UnBanned;
         }
 
         /// <summary>
